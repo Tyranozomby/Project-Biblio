@@ -14,6 +14,7 @@ public class BibliPanel extends JPanel {
 
         JLabel test = new JLabel("Biblio Boy");
         add(test);
+        //BOSSe  !
 
         //TODO Faire un affichage
 
