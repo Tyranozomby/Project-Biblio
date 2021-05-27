@@ -15,8 +15,8 @@ public interface Constantes {
     Color BLACK = new Color(0, 0, 0);
     Color ERROR = new Color(255, 0, 0);
 
-    String BIBLI_MAIL = "bibliBoy@gmail.com";
-    String BIBLI_MDP = "I@mBibliB0y";
+    String BIBLI_MAIL = "b"; //""bibliBoy@gmail.com";
+    String BIBLI_MDP = "b"; //"I@mBibliB0y";
 
     int AUTEUR_SIZE = 255;
     int TITRE_SIZE = 145;
