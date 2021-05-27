@@ -52,18 +52,18 @@ public class BibliPanel extends JPanel {
         GridBagConstraints c = new GridBagConstraints();
 
         JPanel infoEtudiant = makeInfoEtudiant(c);
-        JPanel suprRes = makeSuprRes(c);
+        JPanel supprRes = makeSuprRes(c);
         JPanel ResEtudiant = makeResEtudiant(c);
-        JPanel CMProfilEtudant = makeCMProfilEtudant(c);
+        JPanel CMProfilEtudiant = makeCMProfilEtudant(c);
         JPanel monProfil = ongletProfil(c);
 
         //Ajout onglets
 
         JTabbedPane onglets = new JTabbedPane();
         onglets.add("Info Étudiant", infoEtudiant);
-        onglets.add("Suppression de réservations", suprRes);
+        onglets.add("Suppression de réservations", supprRes);
         onglets.add("Réservations pour Étudiant", ResEtudiant);
-        onglets.add("Création/Modification profil Étudiant", CMProfilEtudant);
+        onglets.add("Création/Modification profil Étudiant", CMProfilEtudiant);
         onglets.add("Mon profil", monProfil);
         onglets.setFocusable(false);
 
@@ -71,10 +71,6 @@ public class BibliPanel extends JPanel {
 
         add(panelTitre, BorderLayout.NORTH);
         add(content, BorderLayout.CENTER);
-
-
-
-        //TODO Faire un affichage
 
     }
 
@@ -108,15 +104,18 @@ public class BibliPanel extends JPanel {
 
         return monProfil;
     }
-    private JPanel makeInfoEtudiant(GridBagConstraints c){
+
+    private JPanel makeInfoEtudiant(GridBagConstraints c) {
         JPanel o1 = new JPanel();
         return o1;
     }
-    private JPanel makeSuprRes(GridBagConstraints c){
+
+    private JPanel makeSuprRes(GridBagConstraints c) {
         JPanel o2 = new JPanel();
         return o2;
     }
-    private JPanel makeResEtudiant(GridBagConstraints c){
+
+    private JPanel makeResEtudiant(GridBagConstraints c) {
         //Onglet nouvelles réservations
 
         JPanel newRes = new JPanel();
@@ -209,11 +208,11 @@ public class BibliPanel extends JPanel {
         newRes.add(scrollPane, c);
         return newRes;
     }
-    private JPanel makeCMProfilEtudant(GridBagConstraints c){
+
+    private JPanel makeCMProfilEtudant(GridBagConstraints c) {
         JPanel o3 = new JPanel();
         return o3;
     }
-
 
 
     public void setDB(DataBase DB) {
