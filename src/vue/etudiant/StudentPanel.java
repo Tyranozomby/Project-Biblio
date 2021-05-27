@@ -51,16 +51,12 @@ public class StudentPanel extends JPanel {
 
         GridBagConstraints c = new GridBagConstraints();
 
-        JPanel newRes = ongletNewRes(c);
-        JPanel mesRes = ongletMesRes(c);
-        JPanel monProfil = ongletProfil(c);
-
         //Ajout onglets
 
         JTabbedPane onglets = new JTabbedPane();
-        onglets.add("Nouvelle Réservation", newRes);
-        onglets.add("Mes Réservations", mesRes);
-        onglets.add("Profil", monProfil);
+        onglets.add("Nouvelle Réservation", ongletNewRes(c));
+        onglets.add("Mes Réservations", ongletMesRes(c));
+        onglets.add("Profil", ongletProfil(c));
 
         onglets.setFocusable(false);
         onglets.setMnemonicAt(0, KeyEvent.VK_N);
