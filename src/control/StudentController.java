@@ -25,7 +25,7 @@ public class StudentController implements ActionListener {
         this.panelPrincipal = studentPanel;
         this.DB = DB;
 
-        panelPrincipal.setNewBookList(DB.researchCorresponding(panelPrincipal.getAuteur(), panelPrincipal.getTitre()));
+        panelPrincipal.setBookList(DB.researchCorresponding(panelPrincipal.getAuteur(), panelPrincipal.getTitre()));
 
         this.panelPrincipal.addListener(this);
     }
@@ -37,7 +37,7 @@ public class StudentController implements ActionListener {
         Reservation res = panelPrincipal.getSelectedRes();
         switch (e.getActionCommand()) {
             case "Rechercher":
-                panelPrincipal.setNewBookList(DB.researchCorresponding(panelPrincipal.getAuteur(), panelPrincipal.getTitre()));
+                panelPrincipal.setBookList(DB.researchCorresponding(panelPrincipal.getAuteur(), panelPrincipal.getTitre()));
                 panelPrincipal.setInfoMessageLiv(Constantes.BASIC_MESSAGE);
                 break;
             case "Réserver":
@@ -68,6 +68,24 @@ public class StudentController implements ActionListener {
                     panelPrincipal.setInfoMessageRes(Constantes.NO_SELECTION);
                 }
                 break;
+            case "Changer mdp":
+                String[] newMdp = panelPrincipal.getNewMdp();
+                String mdp1 = newMdp[0];
+                String mdp2 = newMdp[1];
+                if (mdp1.equals(mdp2) && !mdp1.equals("")) {
+                    String mdp = DB.newPassword(panelPrincipal.getStudent(), mdp1);
+                    if (mdp != null) {
+                        panelPrincipal.setNewMdp(mdp);
+                        panelPrincipal.setInfoMessageEmp(Constantes.SUCCESS);
+                    } else {
+                        panelPrincipal.setInfoMessageEmp(Constantes.MDP_INV);
+                        panelPrincipal.resetMdpChange();
+                    }
+                } else {
+                    panelPrincipal.setInfoMessageEmp(Constantes.MDP_DIFF);
+                    panelPrincipal.resetMdpChange();
+                }
+                break;
         }
     }
 
@@ -83,6 +101,10 @@ public class StudentController implements ActionListener {
     }
 
     public void updateStudentRes() {
-        panelPrincipal.setNewResList(DB.getReservations(panelPrincipal.getStudent()));
+        panelPrincipal.setResList(DB.getReservations(panelPrincipal.getStudent()));
+    }
+
+    public void updateStudentEmp() {
+        panelPrincipal.setEmpList(DB.getEmprunts(panelPrincipal.getStudent()));
     }
 }

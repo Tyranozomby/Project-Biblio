@@ -1,6 +1,7 @@
 package util;
 
 import constantes.Constantes;
+import modele.Emprunt;
 import modele.Etudiant;
 import modele.Livre;
 
@@ -55,7 +56,7 @@ public class DataBase {
         try {
             ResultSet rSet = stmt.executeQuery("SELECT ID_ET, PRENOM, NOM FROM ETUDIANT WHERE EMAIL='" + email + "' and MDP='" + password + "'");
             if (rSet.next()) {
-                Etudiant etu = new Etudiant(Integer.parseInt(rSet.getString(1)), rSet.getString(2), rSet.getString(3));
+                Etudiant etu = new Etudiant(Integer.parseInt(rSet.getString(1)), rSet.getString(2), rSet.getString(3), email, password);
                 etu.setNbRes(getNumberRes(etu));
                 return etu;
             } else {
@@ -66,6 +67,21 @@ public class DataBase {
             return null;
         }
     }
+
+    public int getNumberRes(Etudiant student) {
+        int nb = 0;
+        try {
+            ResultSet rSet = stmt.executeQuery("SELECT count(*) FROM RESERVATION WHERE ID_ET = " + student.getId());
+            if (rSet.next()) {
+                nb = Integer.parseInt(rSet.getString(1));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return nb;
+    }
+
+    /* LIVRES */
 
     public ArrayList<Livre> researchCorresponding(String auteur, String titre) {
         ArrayList<Livre> liste = new ArrayList<>();
@@ -82,19 +98,6 @@ public class DataBase {
         return liste;
     }
 
-    public int getNumberRes(Etudiant student) {
-        int nb = 0;
-        try {
-            ResultSet rSet = stmt.executeQuery("SELECT count(*) FROM RESERVATION WHERE ID_ET = " + student.getId());
-            if (rSet.next()) {
-                nb = Integer.parseInt(rSet.getString(1));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return nb;
-    }
-
     public boolean canReserveBook(Etudiant student, Livre book) {
         ResultSet rSet;
         try {
@@ -105,6 +108,8 @@ public class DataBase {
             return false;
         }
     }
+
+    /* RESERVATIONS */
 
     public void addReservation(Livre selectedBook, Etudiant student) {
         GregorianCalendar cal = new GregorianCalendar();
@@ -152,5 +157,44 @@ public class DataBase {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    /* EMPRUNTS */
+
+    public Emprunt[] getEmprunts(Etudiant student) {
+        Emprunt[] listeEmp = new Emprunt[Constantes.MAX_BOOK];
+        SimpleDateFormat fmt = new SimpleDateFormat("dd MMM yyyy");
+
+        int i = 0;
+        try {
+            ResultSet rSet = stmt.executeQuery("SELECT LIVRE.ID_LIV, AUTEUR, TITRE, DATE_RETOUR, EMPRUNT.ID_EX FROM LIVRE, EXEMPLAIRE, EMPRUNT WHERE LIVRE.ID_LIV = EXEMPLAIRE.ID_LIV and EXEMPLAIRE.ID_EX = EMPRUNT.ID_EX and EMPRUNT.ID_ET = " + student.getId());
+            while (rSet.next()) {
+                Livre liv = new Livre(Integer.parseInt(rSet.getString(1)), rSet.getString(2), rSet.getString(3));
+                String fin = fmt.format(rSet.getDate(4));
+                int id = rSet.getInt(5);
+
+                listeEmp[i] = new Emprunt(liv, fin, id);
+                i++;
+            }
+            for (; i < Constantes.MAX_BOOK; i++) {
+                listeEmp[i] = new Emprunt();
+            }
+            return listeEmp;
+        } catch (SQLException e) {
+            System.out.println("Problème recherche");
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public String newPassword(Etudiant student, String mdp) {
+        try {
+            stmt.executeQuery("UPDATE ETUDIANT SET MDP = '" + mdp + "' WHERE ID_ET =" + student.getId());
+            return mdp;
+        } catch (SQLException e) {
+            System.out.println("Erreur lors de la modification du mot de passe");
+            e.printStackTrace();
+        }
+        return null;
     }
 }
