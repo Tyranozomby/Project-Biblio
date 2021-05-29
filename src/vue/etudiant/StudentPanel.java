@@ -9,7 +9,10 @@ import javax.swing.*;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class StudentPanel extends JPanel {
 
@@ -118,7 +121,7 @@ public class StudentPanel extends JPanel {
         c.gridy = 0;
         c.gridwidth = 1;
         JLabel label = new JLabel("Mon Profil");
-        label.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 20));
+        label.setFont(Constantes.TITLE_FONT);
         monProfil.add(label, c);
 
         c.gridx = 0;
@@ -181,8 +184,16 @@ public class StudentPanel extends JPanel {
         c.gridx = 0;
         c.gridy = 6;
         c.anchor = GridBagConstraints.CENTER;
+        JLabel vosEmprunts = new JLabel("Vos emprunts");
+        vosEmprunts.setFont(Constantes.SUBTITLE_FONT);
+        monProfil.add(vosEmprunts, c);
+
+        c.gridx = 0;
+        c.gridy = 7;
+        c.anchor = GridBagConstraints.CENTER;
 
         tableEmp.setFocusable(false);
+        tableEmp.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         tableEmp.getColumnModel().getColumn(0).setPreferredWidth(400);  // Column size
         tableEmp.getColumnModel().getColumn(1).setPreferredWidth(200);  //
         tableEmp.getColumnModel().getColumn(2).setPreferredWidth(100);  //
@@ -190,7 +201,7 @@ public class StudentPanel extends JPanel {
 
         JScrollPane scroll = new JScrollPane(tableEmp);
         scroll.getViewport().setBackground(Constantes.WHITE);
-        scroll.setPreferredSize(new Dimension(600, 200));
+        scroll.setPreferredSize(new Dimension(600, 97));
         scroll.setBorder(Constantes.BORDER);
         monProfil.add(scroll, c);
 
@@ -216,7 +227,7 @@ public class StudentPanel extends JPanel {
         c.fill = GridBagConstraints.NONE;
         c.anchor = GridBagConstraints.CENTER;
         JLabel label = new JLabel("Mes réservations");
-        label.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 20));
+        label.setFont(Constantes.TITLE_FONT);
         mesRes.add(label, c);
 
         c.insets = new Insets(8, 8, 8, 8);
@@ -236,6 +247,7 @@ public class StudentPanel extends JPanel {
         c.anchor = GridBagConstraints.CENTER;
 
         tableRes.setFocusable(false);
+        tableRes.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         tableRes.getColumnModel().getColumn(0).setPreferredWidth(300);  // Column size
         tableRes.getColumnModel().getColumn(1).setPreferredWidth(130);  //
         tableRes.getColumnModel().getColumn(2).setPreferredWidth(70);   //
@@ -267,9 +279,8 @@ public class StudentPanel extends JPanel {
     private JPanel ongletNewRes(GridBagConstraints c) {
         //Onglet nouvelles réservations
 
-        JPanel newRes = new JPanel();
+        JPanel newRes = new JPanel(new GridBagLayout());
         newRes.setOpaque(false);
-        newRes.setLayout(new GridBagLayout());
 
         c.insets = new Insets(8, 8, 8, 8);
 
@@ -345,6 +356,7 @@ public class StudentPanel extends JPanel {
         c.insets = new Insets(0, 0, 0, 0);
 
         tableLiv.setFocusable(false);
+        tableLiv.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         tableLiv.getColumnModel().getColumn(0).setPreferredWidth(Constantes.AUTEUR_SIZE);  // Column size
         tableLiv.getColumnModel().getColumn(1).setPreferredWidth(Constantes.TITRE_SIZE);   //
 
