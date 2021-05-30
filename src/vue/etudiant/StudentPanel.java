@@ -328,6 +328,7 @@ public class StudentPanel extends JPanel {
         c.anchor = GridBagConstraints.CENTER;
         c.fill = GridBagConstraints.HORIZONTAL;
 
+
         newRes.add(panelBoutons, c);
         //**********Fin boutons**********
 

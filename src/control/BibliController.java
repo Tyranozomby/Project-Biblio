@@ -11,7 +11,7 @@ import java.awt.event.ActionListener;
  *
  * @see BibliPanel
  */
-public class BibliController implements ActionListener {
+public class BibliController { //implements ActionListener { //
 
     private final BibliPanel bibliPanel;
     private final DataBase DB;
@@ -26,7 +26,7 @@ public class BibliController implements ActionListener {
 
         //TODO remplir constructeur
     }
-
+/*
     @Override
     public void actionPerformed(ActionEvent e) {
         //TODO remplir. Ne pas oublier getActionCommand()

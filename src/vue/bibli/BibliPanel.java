@@ -217,5 +217,12 @@ public class BibliPanel extends JPanel {
 
     public void setDB(DataBase DB) {
         controller = new BibliController(this, DB); // !!! Contrôleur !!!
+        ArrayList<Etudiant> truc = DB.setTabStudent();
+        comboBox.removeAllItems();
+        System.out.println(truc);
+        for (Etudiant etu : truc) {
+            System.out.println(etu);
+            comboBox.addItem(etu.toString());
+        }
     }
 }

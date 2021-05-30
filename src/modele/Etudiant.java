@@ -40,6 +40,7 @@ public class Etudiant {
         return id;
     }
 
+
     public int getNbRes() {
         return nbRes;
     }

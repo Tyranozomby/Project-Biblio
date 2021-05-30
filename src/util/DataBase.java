@@ -1,11 +1,8 @@
 package util;
 
 import constantes.Constantes;
-import modele.Emprunt;
-import modele.Etudiant;
-import modele.Livre;
+import modele.*;
 
-import modele.Reservation;
 import oracle.jdbc.driver.OracleDriver;
 
 import java.sql.DriverManager;
