@@ -43,10 +43,10 @@ public class LoginPanel extends JPanel {
         c.insets = new Insets(50, 8, 8, 8);
 
         JLabel title = new JLabel("BiblioRent");
-        title.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 30));
+        title.setFont(Constantes.MAIN_TITLE_FONT);
 
         JLabel subtitle = new JLabel("Login");
-        subtitle.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 20));
+        subtitle.setFont(Constantes.TITLE_FONT);
 
         c.gridy = 0;
         panelNorth.add(title, c);

@@ -8,6 +8,9 @@ import java.awt.Font;
 
 public interface Constantes {
     Font FIELD_FONT = new Font(Font.DIALOG, Font.PLAIN, 15);
+    Font SUBTITLE_FONT = new Font(Font.SANS_SERIF, Font.PLAIN, 16);
+    Font TITLE_FONT = new Font(Font.SANS_SERIF, Font.BOLD, 20);
+    Font MAIN_TITLE_FONT = new Font(Font.SANS_SERIF, Font.BOLD, 30);
     Border BORDER = BorderFactory.createLineBorder(Color.BLACK);
 
     Color BG_COLOR = new Color(26, 202, 206);
@@ -31,6 +34,6 @@ public interface Constantes {
     int MDP_INV = 5;
 
     int MAX_RES = 5;
-    int MAX_BOOK = 15;
+    int MAX_BOOK = 5;
 
 }
