@@ -61,10 +61,8 @@ public class BibliPanel extends JPanel {
 
         JTabbedPane onglets = new JTabbedPane();
         onglets.add("Info Étudiant", infoEtudiant);
-        onglets.add("Suppression de réservations", supprRes);
-        onglets.add("Réservations pour Étudiant", ResEtudiant);
-        onglets.add("Création/Modification profil Étudiant", CMProfilEtudiant);
-        onglets.add("Mon profil", monProfil);
+        onglets.add("Emprunt", supprRes); //Pouvoir voir les exemplaires, les livres non rendus/rendu /Valider les emprunts
+        onglets.add("Reserver et ajouter un livre", ResEtudiant);
         onglets.setFocusable(false);
 
         content.add(onglets, BorderLayout.CENTER);
@@ -95,14 +93,6 @@ public class BibliPanel extends JPanel {
         panelTitre.add(title);
         panelTitre.add(subtitle);
         return panelTitre;
-    }
-
-    private JPanel ongletProfil(GridBagConstraints c) {
-        JPanel monProfil = new JPanel();
-        monProfil.setOpaque(false);
-        monProfil.setLayout(new GridBagLayout());
-
-        return monProfil;
     }
 
     private JPanel makeInfoEtudiant(GridBagConstraints c) {
