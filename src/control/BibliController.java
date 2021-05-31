@@ -1,5 +1,6 @@
 package control;
 
+import modele.Emprunt;
 import modele.Etudiant;
 import util.DataBase;
 import vue.bibli.BibliPanel;
@@ -35,56 +36,63 @@ public class BibliController implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        Etudiant etu;
+        Emprunt emp;
+        int id;
         switch (e.getActionCommand()) {
+            // RETOUR
             case "Retour-Recherche":
                 bibliPanel.setEmpAllList(DB.getEmprunts(bibliPanel.getRetourNom(), bibliPanel.getRetourPrenom(), bibliPanel.getRetourTitre(), bibliPanel.getRetourAuteur()));
                 break;
             case "Retour-Rendu":
-                DB.retourEmprunt(bibliPanel.getRetourSelectedEmp());
-                bibliPanel.setEmpAllList(DB.getEmprunts(bibliPanel.getRetourNom(), bibliPanel.getRetourPrenom(), bibliPanel.getRetourTitre(), bibliPanel.getRetourAuteur()));
+                emp = bibliPanel.getRetourSelectedEmp();
+                if (emp != null) {
+                    DB.retourEmprunt(emp);
+                    bibliPanel.setEmpAllList(DB.getEmprunts(bibliPanel.getRetourNom(), bibliPanel.getRetourPrenom(), bibliPanel.getRetourTitre(), bibliPanel.getRetourAuteur()));
+                }
                 break;
             case "Retour-Relance":
-                Etudiant etu = bibliPanel.getRetourSelectedEmp().getEtudiant();
-                if (etu.getId() != 0) {
-                    bibliPanel.sendMailRelance(etu);
+                emp = bibliPanel.getRetourSelectedEmp();
+                if (emp != null) {
+                    etu = emp.getEtudiant();
+                    if (etu.getId() != 0) {
+                        bibliPanel.sendMailRelance(etu);
+                    }
                 }
                 break;
 
-            case "bouton-Choice":
-                int ID = this.bibliPanel.getJComboBoxID();
-                if (ID > 0) {
-                    Etudiant etudiant = this.DB.getStudent(ID);
-                    this.bibliPanel.setZoneFill(etudiant);
-                    System.out.println(etudiant.toString());
+            // INFO ÉTUDIANTS
+            case "InfoEtu-Choisir":
+                id = bibliPanel.getJComboBoxID();
+                if (id > 0) {
+                    etu = DB.getStudent(id);
+                    bibliPanel.setZoneFill(etu);
                 } else {
-                    this.bibliPanel.setZoneFill(null);
+                    bibliPanel.setZoneFill(null);
                 }
 
                 break;
-            case "bouton-Sauvegarder":
-                int ID2 = this.bibliPanel.getJComboBoxID();
-                if (ID2 > 0) {
-                    Etudiant etud = this.bibliPanel.getInfoEtudiant(ID2);
-                    this.DB.setStudent(etud);
+            case "InfoEtu-Sauvegarder":
+                id = bibliPanel.getJComboBoxID();
+                if (id > 0) {
+                    DB.setStudent(bibliPanel.getInfoEtudiant(id));
                 }
                 break;
 
-            case "bouton-Nouveau":
-                int ID3 = this.bibliPanel.getJComboBoxID();
-                if (ID3 == 0) {
-                    Etudiant etud = this.bibliPanel.getInfoEtudiant(ID3);
-                    this.DB.createStudent(etud);
+            case "InfoEtu-Nouveau":
+                id = bibliPanel.getJComboBoxID();
+                if (id == 0) {
+                    DB.createStudent(bibliPanel.getInfoEtudiant(id));
                 }
-                System.out.println("bouton-Nouveau");
+                System.out.println("InfoEtu-Nouveau");
                 break;
-            case "bouton-Supprimer":
-                System.out.println("bouton-Supprimer");
+            case "InfoEtu-Supprimer":
+                System.out.println("InfoEtu-Supprimer");
                 break;
-
-
         }
     }
-    public KeyAdapter enterListener(Object obj){
+
+    public KeyAdapter enterListener(Object obj) {
         return new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
