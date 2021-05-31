@@ -203,6 +203,7 @@ public class BibliPanel extends JPanel {
         makeInfoEtudiant.setOpaque(false);
         makeInfoEtudiant.setLayout(new GridBagLayout());
 
+
         c.insets = new Insets(8, 8, 8, 8);
 
         // ligne 1
@@ -221,6 +222,7 @@ public class BibliPanel extends JPanel {
         c.anchor = GridBagConstraints.CENTER;
         boutonChoice.setFont(Constantes.FIELD_FONT);
         boutonChoice.setBorder(Constantes.BORDER);
+        boutonChoice.setFocusPainted(false);
         makeInfoEtudiant.add(boutonChoice, c);
 
         // ligne 2
@@ -324,17 +326,30 @@ public class BibliPanel extends JPanel {
         c.ipady = 7;
         boutonSauvegarder.setFont(Constantes.FIELD_FONT);
         boutonSauvegarder.setBorder(Constantes.BORDER);
+        boutonSauvegarder.setFocusPainted(false);
         makeInfoEtudiant.add(boutonSauvegarder, c);
+
+        c.gridx = 1;
+        c.gridy = 5;
+        c.anchor = GridBagConstraints.CENTER;
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.ipadx = 100;
+        c.ipady = 7;
+        boutonNouveau.setFont(Constantes.FIELD_FONT);
+        boutonNouveau.setBorder(Constantes.BORDER);
+        boutonNouveau.setFocusPainted(false);
+        makeInfoEtudiant.add(boutonNouveau, c);
 
         // ligne 6
         c.gridx = 0;
-        c.gridy = 5;
+        c.gridy = 6;
         c.anchor = GridBagConstraints.CENTER;
         c.fill = GridBagConstraints.HORIZONTAL;
         c.ipadx = 100;
         c.ipady = 7;
         boutonSupprimer.setFont(Constantes.FIELD_FONT);
         boutonSupprimer.setBorder(Constantes.BORDER);
+        boutonSupprimer.setFocusPainted(false);
         makeInfoEtudiant.add(boutonSupprimer, c);
 
 
@@ -467,6 +482,11 @@ public class BibliPanel extends JPanel {
     public void setDB(DataBase DB) {
         new BibliController(this, DB); // !!! Contrôleur !!!
         comboBox.removeAllItems();
+
+        // pour créé les nouveau étudiant
+        Etudiant etud = new Etudiant(0,"Etudiant","Créé","r@gmail.com","créateur");
+        comboBox.addItem(etud);
+
         for (Etudiant etu : DB.setTabStudent()) {
             comboBox.addItem(etu);
         }
@@ -557,6 +577,38 @@ public class BibliPanel extends JPanel {
         retourRelance.setActionCommand("Retour-Relance");
         retourRelance.addActionListener(controller);
 
+        //Remplir les zones avec les info Etudiant
+
+        boutonChoice.setActionCommand("bouton-Choice");
+        boutonChoice.addActionListener(controller);
+        boutonSauvegarder.setActionCommand("bouton-Sauvegarder");
+        boutonSauvegarder.addActionListener(controller);
+        boutonNouveau.setActionCommand("bouton-Nouveau");
+        boutonNouveau.addActionListener(controller);
+        boutonSupprimer.setActionCommand("bouton-Supprimer");
+        boutonSupprimer.addActionListener(controller);
+
+
+
         //TODO Remplir avec les objets nécessitant un actionListener. Ne pas oublier setActionCommand("mot-clé")
     }
+
+
+    public void setZoneFill(Etudiant etudiant){
+        if(etudiant==null){ //si null mettre a vide
+            zoneEmail.setText("");
+            zoneNom.setText("");
+            zonePrenom.setText("");
+            zoneMdp.setText("");
+
+        }
+        else{ // mettre info étudiant
+            zoneEmail.setText(etudiant.getEmail());
+            zoneNom.setText(etudiant.getNom());
+            zonePrenom.setText(etudiant.getPrenom());
+            zoneMdp.setText(etudiant.getMdp());
+        }
+
+    }
+
 }

@@ -80,15 +80,13 @@ public class DataBase {
 
 
 
-/*
-    public Etudiant setStudent(int ID) {
+    public Etudiant getStudent(int ID) {
         try {
-            ResultSet rSet = stmt.executeQuery("SELECT * FROM ETUDIANT WHERE ID='" + ID + "'");
+            ResultSet rSet = stmt.executeQuery("SELECT * FROM ETUDIANT WHERE ID_ET=" + ID );
             if (rSet.next()) {
-                Etudiant etu = new Etudiant(Integer.parseInt(rSet.getString(1)), rSet.getString(2), rSet.getString(3), email, password);
-                etu.setNbRes(getNumberRes(etu));
-                return etu;
-            } else {
+                return new Etudiant(Integer.parseInt(rSet.getString(1)), rSet.getString(3), rSet.getString(2), rSet.getString(5), rSet.getString(4));
+            }
+            else {
                 return null;
             }
         } catch (SQLException e) {
@@ -96,7 +94,27 @@ public class DataBase {
             return null;
         }
     }
-*/
+    public void setStudent(Etudiant student) {
+        try {
+            stmt.executeQuery("UPDATE ETUDIANT SET NOM = '" + student.getNom() + "' WHERE ID_ET =" + student.getId());
+            stmt.executeQuery("UPDATE ETUDIANT SET PRENOM = '" + student.getPrenom() + "' WHERE ID_ET =" + student.getId());
+            stmt.executeQuery("UPDATE ETUDIANT SET MDP = '" + student.getMdp() + "' WHERE ID_ET =" + student.getId());
+            stmt.executeQuery("UPDATE ETUDIANT SET EMAIL = '" + student.getEmail() + "' WHERE ID_ET =" + student.getId());
+
+        } catch (SQLException e) {
+            System.out.println("Erreur lors de la modification");
+            e.printStackTrace();
+        }
+    }
+    public void createStudent (Etudiant student) {
+        try {
+            stmt.executeQuery("INSERT INTO ETUDIANT (NOM, PRENOM, MDP, EMAIL) VALUES ('" + student.getNom() + "','" + student.getPrenom() + "','" + student.getMdp() + "','" + student.getEmail() + "')");
+
+        } catch (SQLException e) {
+            System.out.println("Erreur lors de la modification");
+            e.printStackTrace();
+        }
+    }
 
 
     public ArrayList<Etudiant> setTabStudent() {
