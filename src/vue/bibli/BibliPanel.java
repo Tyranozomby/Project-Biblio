@@ -315,6 +315,7 @@ public class BibliPanel extends JPanel {
         makeInfoEtudiant.add(zoneMdp, c);
 
         //Début bouton
+
         c.gridx = 0;
         c.gridy = 5;
         c.anchor = GridBagConstraints.CENTER;
@@ -336,15 +337,7 @@ public class BibliPanel extends JPanel {
         boutonSupprimer.setBorder(Constantes.BORDER);
         makeInfoEtudiant.add(boutonSupprimer, c);
 
-        c.gridx = 1;
-        c.gridy = 5;
-        c.anchor = GridBagConstraints.CENTER;
-        c.fill = GridBagConstraints.HORIZONTAL;
-        c.ipadx = 100;
-        c.ipady = 7;
-        boutonNouveau.setFont(Constantes.FIELD_FONT);
-        boutonNouveau.setBorder(Constantes.BORDER);
-        makeInfoEtudiant.add(boutonNouveau, c);
+
 
         return makeInfoEtudiant;
     }
@@ -525,6 +518,12 @@ public class BibliPanel extends JPanel {
     public String getAuteur() {
         return auteurField.getText();
     }
+
+    public Etudiant getInfoEtudiant(int ID){
+        return new Etudiant(ID,zonePrenom.getText(),zoneNom.getText(),zoneEmail.getText(),zoneMdp.getText());
+    }
+
+    public int getJComboBoxID(){  return comboBox.getSelectedIndex(); }
 
     public Reservation getSelectedRes() {
         int row = tableRes.getSelectedRow();

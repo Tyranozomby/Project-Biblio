@@ -21,6 +21,7 @@ import java.awt.Color;
  */
 public class LoginPanel extends JPanel {
 
+
     private final JTextField emailField = new JTextField();
     private final JPasswordField passwordField = new JPasswordField();
     private final JButton connexionButton = new JButton("Connexion");

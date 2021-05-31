@@ -48,10 +48,42 @@ public class BibliController implements ActionListener {
                     bibliPanel.sendMailRelance(etu);
                 }
                 break;
+
+            case "bouton-Choice":
+                int ID = this.bibliPanel.getJComboBoxID();
+                if (ID > 0) {
+                    Etudiant etudiant = this.DB.getStudent(ID);
+                    this.bibliPanel.setZoneFill(etudiant);
+                    System.out.println(etudiant.toString());
+                } else {
+                    this.bibliPanel.setZoneFill(null);
+                }
+
+                break;
+            case "bouton-Sauvegarder":
+                int ID2 = this.bibliPanel.getJComboBoxID();
+                if (ID2 > 0) {
+                    Etudiant etud = this.bibliPanel.getInfoEtudiant(ID2);
+                    this.DB.setStudent(etud);
+                }
+                break;
+
+            case "bouton-Nouveau":
+                int ID3 = this.bibliPanel.getJComboBoxID();
+                if (ID3 == 0) {
+                    Etudiant etud = this.bibliPanel.getInfoEtudiant(ID3);
+                    this.DB.createStudent(etud);
+                }
+                System.out.println("bouton-Nouveau");
+                break;
+            case "bouton-Supprimer":
+                System.out.println("bouton-Supprimer");
+                break;
+
+
         }
     }
-
-    public KeyAdapter enterListener(Object obj) {
+    public KeyAdapter enterListener(Object obj){
         return new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
