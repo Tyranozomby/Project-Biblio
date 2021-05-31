@@ -466,13 +466,9 @@ public class StudentPanel extends JPanel {
         return student;
     }
 
-    public String getTitre() {
-        return titreField.getText();
-    }
+    public String getTitre() { return titreField.getText(); }
 
-    public String getAuteur() {
-        return auteurField.getText();
-    }
+    public String getAuteur() { return auteurField.getText(); }
 
     /**
      * Method to get which book has been selected

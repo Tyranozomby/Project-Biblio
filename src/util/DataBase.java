@@ -78,6 +78,44 @@ public class DataBase {
         return nb;
     }
 
+
+
+/*
+    public Etudiant setStudent(int ID) {
+        try {
+            ResultSet rSet = stmt.executeQuery("SELECT * FROM ETUDIANT WHERE ID='" + ID + "'");
+            if (rSet.next()) {
+                Etudiant etu = new Etudiant(Integer.parseInt(rSet.getString(1)), rSet.getString(2), rSet.getString(3), email, password);
+                etu.setNbRes(getNumberRes(etu));
+                return etu;
+            } else {
+                return null;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+*/
+
+
+    public ArrayList<Etudiant> setTabStudent() {
+        ArrayList<Etudiant> listEtu = new ArrayList<>();
+        try {
+            ResultSet rSet = stmt.executeQuery("SELECT * FROM ETUDIANT");
+            while (rSet.next()) {
+                Etudiant etu = new Etudiant(Integer.parseInt(rSet.getString(1)), rSet.getString(2), rSet.getString(3), rSet.getString(5), rSet.getString(4));
+                // etu.setNbRes(getNumberRes(etu)); // il n'y a pas ça ? PAS UTILISER MM STATEMENT BC ça fait d'la Merde askip // ok dac
+                listEtu.add(etu);
+            }
+            return listEtu;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return listEtu;
+        }
+    }
+
+
     /* LIVRES */
 
     public ArrayList<Livre> researchCorresponding(String auteur, String titre) {
