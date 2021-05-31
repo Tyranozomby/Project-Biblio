@@ -40,7 +40,6 @@ public class Etudiant {
         return id;
     }
 
-
     public int getNbRes() {
         return nbRes;
     }
@@ -53,4 +52,10 @@ public class Etudiant {
     public void setNbRes(int nb) {
         nbRes = nb;
     }
+
+    @Override
+    public String toString() {
+        return id + " " + nom + " " + prenom;
+    }
+
 }

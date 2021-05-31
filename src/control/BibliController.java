@@ -1,9 +1,6 @@
 package control;
 
-import constantes.Constantes;
 import modele.Etudiant;
-import modele.Livre;
-import modele.Reservation;
 import util.DataBase;
 import vue.bibli.BibliPanel;
 
@@ -17,7 +14,7 @@ import java.awt.event.KeyEvent;
  *
  * @see BibliPanel
  */
-public class BibliController { //implements ActionListener { //
+public class BibliController implements ActionListener {
 
     private final BibliPanel bibliPanel;
     public final DataBase DB;
@@ -34,43 +31,21 @@ public class BibliController { //implements ActionListener { //
 
         //TODO remplir constructeur
     }
-/*
+
     @Override
     public void actionPerformed(ActionEvent e) {
-        Livre book = BibliPanel.getSelectedBook();
-        Etudiant stu = BibliPanel.getStudent();
-        Reservation res = BibliPanel.getSelectedRes();
         switch (e.getActionCommand()) {
-            case "Rechercher":
-                BibliPanel.setBookList(DB.researchCorresponding(BibliPanel.getAuteur(), BibliPanel.getTitre()));
-                BibliPanel.setInfoMessageLiv(Constantes.BASIC_MESSAGE);
+            case "Retour-Recherche":
+                bibliPanel.setEmpAllList(DB.getEmprunts(bibliPanel.getRetourNom(), bibliPanel.getRetourPrenom(), bibliPanel.getRetourTitre(), bibliPanel.getRetourAuteur()));
                 break;
-            case "Réserver":
-                if (book != null) {
-                    if (DB.getNumberRes(stu) < Constantes.MAX_RES) {
-                        if (DB.canReserveBook(stu, book)) {
-                            DB.addReservation(book, BibliPanel.getStudent());
-                            BibliPanel.setInfoMessageLiv(Constantes.SUCCESS);
-                            updateStudentRes();
-                        } else {
-                            BibliPanel.setInfoMessageLiv(Constantes.ALREADY_RESERVED);
-                        }
-                    } else {
-                        BibliPanel.setInfoMessageLiv(Constantes.MAX_RES_REACHED);
-                    }
-                } else {
-                    BibliPanel.setInfoMessageLiv(Constantes.NO_SELECTION);
-                }
+            case "Retour-Rendu":
+                DB.retourEmprunt(bibliPanel.getRetourSelectedEmp());
+                bibliPanel.setEmpAllList(DB.getEmprunts(bibliPanel.getRetourNom(), bibliPanel.getRetourPrenom(), bibliPanel.getRetourTitre(), bibliPanel.getRetourAuteur()));
                 break;
-            case "Supprimer":
-                if (res != null) {
-                    DB.deleteReservation(res, stu);
-                    updateStudentRes();
-                    stu.setNbRes(DB.getNumberRes(stu));
-                    BibliPanel.setInfoMessageRes(Constantes.SUCCESS);
-                    BibliPanel.setInfoMessageLiv(Constantes.BASIC_MESSAGE);
-                } else {
-                    BibliPanel.setInfoMessageRes(Constantes.NO_SELECTION);
+            case "Retour-Relance":
+                Etudiant etu = bibliPanel.getRetourSelectedEmp().getEtudiant();
+                if (etu.getId() != 0) {
+                    bibliPanel.sendMailRelance(etu);
                 }
                 break;
         }
@@ -81,17 +56,9 @@ public class BibliController { //implements ActionListener { //
             @Override
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                    actionPerformed(new ActionEvent(obj, 0, "Rechercher"));
+                    actionPerformed(new ActionEvent(obj, 0, "Retour-Recherche"));
                 }
             }
         };
-    } */
-
-    public void updateStudentRes() {
-        bibliPanel.setResList(DB.getReservations(bibliPanel.getStudent()));
-    }
-
-    public void updateStudentEmp() {
-        bibliPanel.setEmpList(DB.getEmprunts(bibliPanel.getStudent()));
     }
 }

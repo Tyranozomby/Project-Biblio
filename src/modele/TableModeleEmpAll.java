@@ -10,18 +10,17 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class TableModeleEmp implements TableModel {
+public class TableModeleEmpAll implements TableModel {
 
-
-    private Emprunt[] listeEmp = new Emprunt[Constantes.MAX_RES];
-    private static final String[] header = {"Titre", "Auteur", "Fin emprunt"};
+    private ArrayList<Emprunt> listeEmp = new ArrayList<>();
+    private static final String[] header = {"Titre", "Auteur", "Étudiant", "Fin emprunt"};
 
     private final ArrayList<TableModelListener> listeners = new ArrayList<>();
 
 
     @Override
     public int getRowCount() {
-        return listeEmp.length;
+        return listeEmp.size();
     }
 
     @Override
@@ -46,16 +45,16 @@ public class TableModeleEmp implements TableModel {
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        Emprunt emp = listeEmp[rowIndex];
+        Emprunt emp = listeEmp.get(rowIndex);
         if (columnIndex == 0) {
             return emp.getLivre().getTitre();
         } else if (columnIndex == 1) {
             return emp.getLivre().getAuteur();
         } else if (columnIndex == 2) {
+            return emp.getEtudiant().getNom() + " " + emp.getEtudiant().getPrenom();
+        } else if (columnIndex == 3) {
             try {
-                SimpleDateFormat fmt = new SimpleDateFormat("dd MMM yyyy");
-                Date date = fmt.parse(emp.getFin());
-                if (new Date().after(date)) {
+                if (new Date().after(new SimpleDateFormat("dd MMM yyyy").parse(emp.getFin()))) {
                     return emp.getFin() + " ⚠";
                 } else {
                     return emp.getFin();
@@ -65,6 +64,10 @@ public class TableModeleEmp implements TableModel {
             }
         }
         return null;
+    }
+
+    public Emprunt getValueAt(int row) {
+        return listeEmp.get(row);
     }
 
     @Override
@@ -81,7 +84,7 @@ public class TableModeleEmp implements TableModel {
         listeners.remove(l);
     }
 
-    public void setListeEmp(Emprunt[] list) {
+    public void setListeEmp(ArrayList<Emprunt> list) {
         listeEmp = list;
         for (TableModelListener listener : listeners) {
             listener.tableChanged(new TableModelEvent(this));

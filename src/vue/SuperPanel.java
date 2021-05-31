@@ -24,7 +24,6 @@ import java.sql.SQLException;
  */
 public class SuperPanel extends JPanel {
 
-    private DataBase DB;
     private final LoginPanel loginPanel = new LoginPanel();
     private final StudentPanel studentPanel = new StudentPanel();
     private final BibliPanel bibliPanel = new BibliPanel();
@@ -71,7 +70,6 @@ public class SuperPanel extends JPanel {
      */
     public void setBibliPanel() {
         layout.show(this, "panelBibli");
-        new BibliController(bibliPanel, DB);
     }
 
     /**
@@ -97,7 +95,7 @@ public class SuperPanel extends JPanel {
     /**
      * Second part of connectAndStart
      *
-     * @param DB to see if connection has been done properly
+     * @param DB DataBase gotten from connection attempt
      * @see #connectAndStart()
      */
     private void finishConnection(DataBase DB) {
@@ -105,7 +103,6 @@ public class SuperPanel extends JPanel {
             coControl.setDB(DB);
             studentPanel.setDB(DB);
             bibliPanel.setDB(DB);
-            this.DB = DB;
             layout.show(this, "panelCo");
         } else {
             layout.show(this, "panelError");

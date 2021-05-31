@@ -270,9 +270,22 @@ INSERT INTO EXEMPLAIRE(id_liv) VALUES (101);
 INSERT INTO EXEMPLAIRE(id_liv) VALUES (102);
 INSERT INTO EXEMPLAIRE(id_liv) VALUES (103);
 
+/*DECLARE
+    id LIVRE.ID_LIV%TYPE;
+BEGIN
+    FOR id IN (SELECT ID_LIV FROM LIVRE) loop
+            FOR i in 0..(floor(dbms_random.value(1, 10))) loop
+                    INSERT INTO EXEMPLAIRE (ID_LIV) VALUES (id.ID_LIV);
+                end loop ;
+        end loop ;
+end ;
+/*/
+
 insert into EMPRUNT (date_emp, date_retour, id_ex, id_et) VALUES ('06-05-2021','13-05-2021','1','2');
 insert into EMPRUNT (date_emp, date_retour, id_ex, id_et) VALUES ('06-05-2021','13-05-2021','3','2');
 insert into EMPRUNT (date_emp, date_retour, id_ex, id_et) VALUES ('06-05-2021','13-05-2021','5','2');
+insert into EMPRUNT (date_emp, date_retour, id_ex, id_et) VALUES ('31-05-2021','15-06-2021','2','1');
+insert into EMPRUNT (date_emp, date_retour, id_ex, id_et) VALUES ('31-05-2021','15-06-2021','6','1');
 
 select * from ETUDIANT;
 select * from LIVRE;
@@ -282,3 +295,7 @@ select * from RESERVATION;
 
 SELECT ID_EX FROM EMPRUNT WHERE ID_ET = 2;
 SELECT ID_LIV FROM EXEMPLAIRE WHERE ID_EX in (SELECT ID_EX FROM EMPRUNT WHERE ID_ET = 2);
+
+SELECT LIVRE.ID_LIV, AUTEUR, TITRE, DATE_RETOUR, EMPRUNT.ID_EX, ETUDIANT.ID_ET, PRENOM, NOM, EMAIL, MDP FROM LIVRE, EXEMPLAIRE, EMPRUNT, ETUDIANT WHERE LIVRE.ID_LIV = EXEMPLAIRE.ID_LIV and EXEMPLAIRE.ID_EX = EMPRUNT.ID_EX and EMPRUNT.ID_ET = ETUDIANT.ID_ET and UPPER(NOM) like UPPER('%%') and UPPER(PRENOM) like UPPER('%%') and UPPER(AUTEUR) like UPPER('%%') and UPPER(TITRE) like UPPER('%tI%');
+
+DELETE EMPRUNT WHERE ID_EX = 8;

@@ -204,11 +204,11 @@ public class DataBase {
         try {
             ResultSet rSet = stmt.executeQuery("SELECT LIVRE.ID_LIV, AUTEUR, TITRE, DATE_RETOUR, EMPRUNT.ID_EX FROM LIVRE, EXEMPLAIRE, EMPRUNT WHERE LIVRE.ID_LIV = EXEMPLAIRE.ID_LIV and EXEMPLAIRE.ID_EX = EMPRUNT.ID_EX and EMPRUNT.ID_ET = " + student.getId());
             while (rSet.next()) {
-                Livre liv = new Livre(Integer.parseInt(rSet.getString(1)), rSet.getString(2), rSet.getString(3));
+                Livre liv = new Livre(rSet.getInt(1), rSet.getString(2), rSet.getString(3));
                 String fin = fmt.format(rSet.getDate(4));
                 int id = rSet.getInt(5);
 
-                listeEmp[i] = new Emprunt(liv, fin, id);
+                listeEmp[i] = new Emprunt(liv, fin, student, id);
                 i++;
             }
             for (; i < Constantes.MAX_BOOK; i++) {
@@ -220,6 +220,59 @@ public class DataBase {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public ArrayList<Emprunt> getEmprunts() {
+        ArrayList<Emprunt> listeEmp = new ArrayList<>();
+        SimpleDateFormat fmt = new SimpleDateFormat("dd MMM yyyy");
+
+        try {
+            ResultSet rSet = stmt.executeQuery("SELECT LIVRE.ID_LIV, AUTEUR, TITRE, DATE_RETOUR, EMPRUNT.ID_EX, ETUDIANT.ID_ET, PRENOM, NOM, EMAIL, MDP FROM LIVRE, EXEMPLAIRE, EMPRUNT, ETUDIANT WHERE LIVRE.ID_LIV = EXEMPLAIRE.ID_LIV and EXEMPLAIRE.ID_EX = EMPRUNT.ID_EX and EMPRUNT.ID_ET = ETUDIANT.ID_ET");
+            while (rSet.next()) {
+                Livre liv = new Livre(rSet.getInt(1), rSet.getString(2), rSet.getString(3));
+                String fin = fmt.format(rSet.getDate(4));
+                int id = rSet.getInt(5);
+                Etudiant student = new Etudiant(rSet.getInt(6), rSet.getString(7), rSet.getString(8), rSet.getString(9), rSet.getString(10));
+
+                listeEmp.add(new Emprunt(liv, fin, student, id));
+            }
+            return listeEmp;
+        } catch (SQLException e) {
+            System.out.println("Problème recherche");
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public ArrayList<Emprunt> getEmprunts(String nom, String prenom, String titre, String auteur) {
+        ArrayList<Emprunt> listeEmp = new ArrayList<>();
+        SimpleDateFormat fmt = new SimpleDateFormat("dd MMM yyyy");
+
+        try {
+            ResultSet rSet = stmt.executeQuery("SELECT LIVRE.ID_LIV, AUTEUR, TITRE, DATE_RETOUR, EMPRUNT.ID_EX, ETUDIANT.ID_ET, PRENOM, NOM, EMAIL, MDP FROM LIVRE, EXEMPLAIRE, EMPRUNT, ETUDIANT WHERE LIVRE.ID_LIV = EXEMPLAIRE.ID_LIV and EXEMPLAIRE.ID_EX = EMPRUNT.ID_EX and EMPRUNT.ID_ET = ETUDIANT.ID_ET and UPPER(NOM) like UPPER('%" + nom + "%') and UPPER(PRENOM) like UPPER('%" + prenom + "%') and UPPER(AUTEUR) like UPPER('%" + auteur + "%') and UPPER(TITRE) like UPPER('%" + titre + "%')");
+            while (rSet.next()) {
+                Livre liv = new Livre(rSet.getInt(1), rSet.getString(2), rSet.getString(3));
+                int id = rSet.getInt(5);
+                String fin = fmt.format(rSet.getDate(4));
+                Etudiant student = new Etudiant(rSet.getInt(6), rSet.getString(7), rSet.getString(8), rSet.getString(9), rSet.getString(10));
+
+                listeEmp.add(new Emprunt(liv, fin, student, id));
+            }
+            return listeEmp;
+        } catch (SQLException e) {
+            System.out.println("Problème recherche");
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public void retourEmprunt(Emprunt emp) {
+        try {
+            stmt.executeQuery("DELETE EMPRUNT WHERE ID_EX = " + emp.getId());
+        } catch (SQLException e) {
+            System.out.println("Problème lors du retour");
+            e.printStackTrace();
+        }
     }
 
     public String newPassword(Etudiant student, String mdp) {

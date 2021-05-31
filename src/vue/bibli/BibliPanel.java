@@ -2,37 +2,23 @@ package vue.bibli;
 
 import constantes.Constantes;
 import control.BibliController;
-import control.StudentController;
 import modele.*;
 import util.DataBase;
 
 import javax.swing.*;
 import java.awt.*;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Arrays;
 
-public class BibliPanel<Database> extends JPanel {
-
-
-    private Etudiant student;
-    private BibliController controller;
+public class BibliPanel extends JPanel {
 
     private final JLabel title = new JLabel();
-
-    private final JLabel profilNom = new JLabel();
-    private final JLabel profilPrenom = new JLabel();
-    private final JLabel profilMail = new JLabel();
-    private final JLabel profilMdp = new JLabel();
 
     private final JButton searchButton = new JButton("Rechercher");
     private final JButton reserveButton = new JButton("Réserver");
     private final JButton cancelResButton = new JButton("Annuler la réservation");
 
     private final JButton boutonChoice = new JButton("Choisir");
-    private final JButton boutonSauvegarder = new JButton("Sauvergarder");
+    private final JButton boutonSauvegarder = new JButton("Sauvegarder");
     private final JButton boutonSupprimer = new JButton("Supprimer");
     private final JButton boutonNouveau = new JButton("Nouveau");
 
@@ -41,7 +27,16 @@ public class BibliPanel<Database> extends JPanel {
     private final JTextField zonePrenom = new JTextField();
     private final JTextField zoneMdp = new JTextField();
 
-    private final JComboBox<String> comboBox = new JComboBox<>();
+    //Retour Livres
+    private final JTextField retourNom = new JTextField();
+    private final JTextField retourPrenom = new JTextField();
+    private final JTextField retourTitre = new JTextField();
+    private final JTextField retourAuteur = new JTextField();
+    private final JButton retourRecherche = new JButton("Rechercher");
+    private final JButton retourRendu = new JButton("Livre bien rendu");
+    private final JButton retourRelance = new JButton("Relancer l'élève");
+
+    private final JComboBox<Etudiant> comboBox = new JComboBox<>();
 
     private final JTextField titreField = new JTextField();
     private final JTextField auteurField = new JTextField();
@@ -49,10 +44,10 @@ public class BibliPanel<Database> extends JPanel {
 
     private final TableModeleLiv modeleLiv = new TableModeleLiv();
     private final TableModeleRes modeleRes = new TableModeleRes();
-    private final TableModeleEmp modeleEmp = new TableModeleEmp();
+    private final TableModeleEmpAll modeleEmpAll = new TableModeleEmpAll();
     private final JTable tableLiv = new JTable(modeleLiv);
     private final JTable tableRes = new JTable(modeleRes);
-    private final JTable tableEmp = new JTable(modeleEmp);
+    private final JTable tableEmpAll = new JTable(modeleEmpAll);
 
     private final JLabel infoLiv = new JLabel();
     private final JLabel infoRes = new JLabel();
@@ -77,16 +72,13 @@ public class BibliPanel<Database> extends JPanel {
 
         GridBagConstraints c = new GridBagConstraints();
 
-        JPanel infoEtudiant = makeInfoEtudiant(c);
-        JPanel supprRes = makeSuprRes(c);
-        JPanel ResEtudiant = makeResEtudiant(c);
-
         //Ajout onglets
 
         JTabbedPane onglets = new JTabbedPane();
-        onglets.add("Info Étudiant", infoEtudiant);
-        onglets.add("Emprunt", supprRes); //Pouvoir voir les exemplaires, les livres non rendus/rendu /Valider les emprunts
-        onglets.add("Reserver et ajouter un livre", ResEtudiant);
+        onglets.add("Info Étudiant", infoEtudiant(c));
+        onglets.add("Emprunt", supprRes(c)); //Pouvoir voir les exemplaires, les livres non rendus/rendu /Valider les emprunts
+        onglets.add("Réserver et ajouter un livre", resEtudiant(c));
+        onglets.add("Retours livres", retourLivres(c));
         onglets.setFocusable(false);
 
         content.add(onglets, BorderLayout.CENTER);
@@ -95,11 +87,6 @@ public class BibliPanel<Database> extends JPanel {
         add(content, BorderLayout.CENTER);
 
     }
-
-    public void addListener(BibliController controller) {
-        //TODO Remplir avec les objets nécessitant un actionListener. Ne pas oublier setActionCommand("mot-clé")
-    }
-
 
     private JPanel panelTitre() {
         JPanel panelTitre = new JPanel();
@@ -119,7 +106,98 @@ public class BibliPanel<Database> extends JPanel {
         return panelTitre;
     }
 
-    private JPanel makeInfoEtudiant(GridBagConstraints c) {
+    /**
+     * Method used to get panel for books' return and remind late students
+     *
+     * @param c GridBagConstraints object to use for the panel
+     * @return a JPanel
+     */
+    private JPanel retourLivres(GridBagConstraints c) {
+        JPanel panel = new JPanel(new GridBagLayout());
+        panel.setOpaque(false);
+
+        // TABLEAU
+        c.gridy = 1;
+        c.gridwidth = 1;
+        tableEmpAll.setFocusable(false);
+        tableEmpAll.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        tableEmpAll.getColumnModel().getColumn(0).setPreferredWidth(300);  //
+        tableEmpAll.getColumnModel().getColumn(1).setPreferredWidth(250);  // Column size
+        tableEmpAll.getColumnModel().getColumn(2).setPreferredWidth(150);  //
+        tableEmpAll.getColumnModel().getColumn(3).setPreferredWidth(100);  //
+
+        JScrollPane scrollPane = new JScrollPane(tableEmpAll);
+        scrollPane.setPreferredSize(new Dimension(800, 218));
+        scrollPane.getViewport().setBackground(Constantes.WHITE);
+        scrollPane.setBorder(Constantes.BORDER);
+        panel.add(scrollPane, c);
+
+        // TEXT FIELDS
+        c.insets = new Insets(8, 250, 30, 250);
+        c.gridx = 0;
+        c.gridy = 0;
+        c.gridwidth = 1;
+        c.fill = GridBagConstraints.HORIZONTAL;
+        JPanel fields = new JPanel(new GridLayout(4, 2, 10, 10));
+        fields.setOpaque(false);
+
+        JLabel nomEtu = new JLabel("Nom élève:");
+        nomEtu.setLabelFor(retourNom);
+        nomEtu.setDisplayedMnemonic('n');
+        fields.add(nomEtu);
+
+        retourNom.setFont(Constantes.FIELD_FONT);
+        retourNom.setBorder(Constantes.BORDER);
+        fields.add(retourNom);
+
+        JLabel prenomEtu = new JLabel("Prénom élève:");
+        prenomEtu.setLabelFor(retourPrenom);
+        prenomEtu.setDisplayedMnemonic('p');
+        fields.add(prenomEtu);
+
+        retourPrenom.setFont(Constantes.FIELD_FONT);
+        retourPrenom.setBorder(Constantes.BORDER);
+        fields.add(retourPrenom);
+
+        JLabel titre = new JLabel("Titre:");
+        titre.setLabelFor(retourTitre);
+        titre.setDisplayedMnemonic('t');
+        fields.add(titre);
+
+        retourTitre.setFont(Constantes.FIELD_FONT);
+        retourTitre.setBorder(Constantes.BORDER);
+        fields.add(retourTitre);
+
+        JLabel auteur = new JLabel("Auteur:");
+        auteur.setLabelFor(retourAuteur);
+        auteur.setDisplayedMnemonic('a');
+        fields.add(auteur);
+
+        retourAuteur.setFont(Constantes.FIELD_FONT);
+        retourAuteur.setBorder(Constantes.BORDER);
+        fields.add(retourAuteur);
+        panel.add(fields, c);
+
+        c.insets = new Insets(30, 100, 8, 100);
+
+        // BOUTONS
+        c.gridy = 2;
+        c.gridwidth = 1;
+        JPanel boutons = new JPanel(new GridLayout(1, 3, 10, 10));
+        boutons.setOpaque(false);
+        retourRecherche.setFocusPainted(false); //
+        retourRendu.setFocusPainted(false);     // FOCUS PAINTED FALSE
+        retourRelance.setFocusPainted(false);   //
+        boutons.add(retourRecherche);   //
+        boutons.add(retourRendu);       // ADD
+        boutons.add(retourRelance);     //
+
+        panel.add(boutons, c);
+
+        return panel;
+    }
+
+    private JPanel infoEtudiant(GridBagConstraints c) {
         JPanel makeInfoEtudiant = new JPanel();
 
         makeInfoEtudiant.setOpaque(false);
@@ -129,7 +207,6 @@ public class BibliPanel<Database> extends JPanel {
 
         // ligne 1
 
-
         c.gridx = 0;
         c.gridy = 0;
         c.anchor = GridBagConstraints.WEST;
@@ -137,19 +214,14 @@ public class BibliPanel<Database> extends JPanel {
         c.ipadx = 100;
         c.ipady = 7;
         comboBox.setFont(Constantes.FIELD_FONT);
-        comboBox.setBorder(Constantes.BORDER);
+        comboBox.setBackground(Constantes.WHITE);
         makeInfoEtudiant.add(comboBox, c);
 
         c.gridx = 1;
-        c.gridy = 0;
         c.anchor = GridBagConstraints.CENTER;
-        c.fill = GridBagConstraints.HORIZONTAL;
-        c.ipadx = 100;
-        c.ipady = 7;
         boutonChoice.setFont(Constantes.FIELD_FONT);
         boutonChoice.setBorder(Constantes.BORDER);
         makeInfoEtudiant.add(boutonChoice, c);
-
 
         // ligne 2
 
@@ -165,7 +237,6 @@ public class BibliPanel<Database> extends JPanel {
         makeInfoEtudiant.add(labelnom, c);
 
         c.gridx = 1;
-        c.gridy = 1;
         c.anchor = GridBagConstraints.CENTER;
         c.fill = GridBagConstraints.HORIZONTAL;
         c.ipadx = 100;
@@ -173,7 +244,6 @@ public class BibliPanel<Database> extends JPanel {
         zoneNom.setFont(Constantes.FIELD_FONT);
         zoneNom.setBorder(Constantes.BORDER);
         makeInfoEtudiant.add(zoneNom, c);
-
 
         // ligne 3
 
@@ -198,8 +268,7 @@ public class BibliPanel<Database> extends JPanel {
         zonePrenom.setBorder(Constantes.BORDER);
         makeInfoEtudiant.add(zonePrenom, c);
 
-
-        // ligne 3
+        // ligne 4
 
         c.gridx = 0;
         c.gridy = 3;
@@ -222,8 +291,7 @@ public class BibliPanel<Database> extends JPanel {
         zoneEmail.setBorder(Constantes.BORDER);
         makeInfoEtudiant.add(zoneEmail, c);
 
-
-        // ligne 4
+        // ligne 5
 
         c.gridx = 0;
         c.gridy = 4;
@@ -257,7 +325,7 @@ public class BibliPanel<Database> extends JPanel {
         boutonSauvegarder.setBorder(Constantes.BORDER);
         makeInfoEtudiant.add(boutonSauvegarder, c);
 
-        //6
+        // ligne 6
         c.gridx = 0;
         c.gridy = 5;
         c.anchor = GridBagConstraints.CENTER;
@@ -281,7 +349,7 @@ public class BibliPanel<Database> extends JPanel {
         return makeInfoEtudiant;
     }
 
-    private JPanel makeResEtudiant(GridBagConstraints c) {
+    private JPanel resEtudiant(GridBagConstraints c) {
         //Onglet nouvelles réservations
 
         JPanel newRes = new JPanel();
@@ -398,28 +466,55 @@ public class BibliPanel<Database> extends JPanel {
         return newRes;
     }
 
-    public JPanel makeSuprRes(GridBagConstraints c) {
-        return null;
+    public JPanel supprRes(GridBagConstraints c) {
+        return new JPanel();
     }
 
 
     public void setDB(DataBase DB) {
-        controller = new BibliController(this, DB); // !!! Contrôleur !!!
-        ArrayList<Etudiant> truc = DB.setTabStudent();
+        new BibliController(this, DB); // !!! Contrôleur !!!
         comboBox.removeAllItems();
-        System.out.println(truc);
-        for (Etudiant etu : truc) {
-            System.out.println(etu);
-            comboBox.addItem(etu.toString());
+        for (Etudiant etu : DB.setTabStudent()) {
+            comboBox.addItem(etu);
         }
+        modeleEmpAll.setListeEmp(DB.getEmprunts());
     }
 
     public void setBookList(ArrayList<Livre> liste) {
         modeleLiv.setListeLivres(liste);
     }
 
-    public Etudiant getStudent() {
-        return student;
+
+    // GET RETOUR
+    public String getRetourNom() {
+        return retourNom.getText();
+    }
+
+    public String getRetourPrenom() {
+        return retourPrenom.getText();
+    }
+
+    public String getRetourTitre() {
+        return retourTitre.getText();
+    }
+
+    public String getRetourAuteur() {
+        return retourAuteur.getText();
+    }
+
+    public Emprunt getRetourSelectedEmp() {
+        int row = tableEmpAll.getSelectedRow();
+        if (row == -1) {
+            return null;
+        }
+        return modeleEmpAll.getValueAt(row);
+    }
+
+    public void sendMailRelance(Etudiant student) {
+        String mail = student.getEmail();
+        if (!mail.equals("")) {
+            JOptionPane.showMessageDialog(this, "Un email a bien été envoyé à l'adresse: " + student.getEmail() + "\nEn vrai non mais faites comme si");
+        }
     }
 
 
@@ -431,32 +526,6 @@ public class BibliPanel<Database> extends JPanel {
         return auteurField.getText();
     }
 
-    public String getIdEtudiant() {
-        return idEtudiantField.getText();
-    }
-
-    /* *
-     * Method to get which book has been selected
-     *
-     * @return Selected book
-     */
-
-    /*
-    public Livre getSelectedBook() {
-        int row = tableLiv.getSelectedRow();
-        if (row == -1) { // No book selected
-            return null;
-        }
-        setInfoMessageLiv(Constantes.BASIC_MESSAGE);
-        return modeleLiv.getValueAt(row);
-    }
-
-    /**
-     * Method to get which reservation has been selected
-     *
-     * @return Selected reservation
-     */
-
     public Reservation getSelectedRes() {
         int row = tableRes.getSelectedRow();
         if (row == -1 || modeleRes.getValueAt(row).getLivre().getId() == 0) { // No book selected
@@ -465,21 +534,30 @@ public class BibliPanel<Database> extends JPanel {
         return modeleRes.getValueAt(row);
     }
 
-    public void setFocus() {
-        titreField.requestFocusInWindow();
-    }
-
-
     public void setResList(Reservation[] res) {
         modeleRes.setListeRes(res);
     }
 
-    public void setEmpList(Emprunt[] emp) {
-        modeleEmp.setListeEmp(emp);
+    public void setEmpAllList(ArrayList<Emprunt> emp) {
+        modeleEmpAll.setListeEmp(emp);
     }
 
-
     public void addListener(BibliController controller) {
+
+
+        // RETOUR LIVRES
+        retourNom.addKeyListener(controller.enterListener(retourNom));
+        retourPrenom.addKeyListener(controller.enterListener(retourPrenom));
+        retourTitre.addKeyListener(controller.enterListener(retourTitre));
+        retourAuteur.addKeyListener(controller.enterListener(retourAuteur));
+
+        retourRecherche.setActionCommand("Retour-Recherche");
+        retourRecherche.addActionListener(controller);
+        retourRendu.setActionCommand("Retour-Rendu");
+        retourRendu.addActionListener(controller);
+        retourRelance.setActionCommand("Retour-Relance");
+        retourRelance.addActionListener(controller);
+
         //TODO Remplir avec les objets nécessitant un actionListener. Ne pas oublier setActionCommand("mot-clé")
     }
 }
