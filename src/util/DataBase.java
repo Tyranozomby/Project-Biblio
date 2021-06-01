@@ -92,6 +92,8 @@ public class DataBase {
         }
     }
 
+
+
     public void setStudent(Etudiant student) {
         try {
             stmt.executeQuery("UPDATE ETUDIANT SET NOM = '" + student.getNom() + "' WHERE ID_ET =" + student.getId());
@@ -113,6 +115,17 @@ public class DataBase {
             System.out.println("Erreur lors de la modification");
             e.printStackTrace();
         }
+    }
+
+    public void deleteStudent(int id){
+        try {
+            stmt.executeQuery("DELETE from ETUDIANT WHERE ID_ET = " + id );
+
+        } catch (SQLException e) {
+            System.out.println("Erreur lors de la Suppression");
+            e.printStackTrace();
+        }
+
     }
 
 

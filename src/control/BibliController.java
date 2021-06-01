@@ -2,6 +2,7 @@ package control;
 
 import modele.Emprunt;
 import modele.Etudiant;
+import modele.Livre;
 import util.DataBase;
 import vue.bibli.BibliPanel;
 
@@ -86,9 +87,45 @@ public class BibliController implements ActionListener {
                 }
                 System.out.println("InfoEtu-Nouveau");
                 break;
+
             case "InfoEtu-Supprimer":
-                System.out.println("InfoEtu-Supprimer");
+
+            id = bibliPanel.getJComboBoxID();
+            System.out.println(id);
+            DB.deleteStudent(id);
+            System.out.println("InfoEtu-Supprimer");
+            bibliPanel.updateJCombobox(DB);
+            break;
+
+            case "resEtudiant-search":
+                bibliPanel.setBookList(DB.researchCorresponding(bibliPanel.getAuteur(), bibliPanel.getTitre()));
+
+                System.out.println("resEtudiant-search");
                 break;
+            case "resEtudiant-reserver":
+                Etudiant stu = DB.getStudent(bibliPanel.getID());
+                Livre book = bibliPanel.getSelectedBook();
+                if (book != null) {
+                    if (DB.getNumberRes(stu) < Constantes.MAX_RES) {
+                        if (DB.canReserveBook(stu, book)) {
+                            DB.addReservation(book, stu);
+                        }
+                    }
+                }
+                System.out.println("resEtudiant-reserver");
+                break;
+            case "resEtudiant-ajout":
+                DB.createBook(bibliPanel.getAuteur(), bibliPanel.getTitre());
+                System.out.println("resEtudiant-ajout");
+                break;
+
+            case "resEtudiant-suppression":
+                DB.suprBook(bibliPanel.getAuteur(), bibliPanel.getTitre());
+                System.out.println("resEtudiant-Supr");
+                break;
+
+
+
         }
     }
 

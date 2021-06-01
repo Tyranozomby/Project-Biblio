@@ -16,6 +16,8 @@ public class BibliPanel extends JPanel {
     private final JButton searchButton = new JButton("Rechercher");
     private final JButton reserveButton = new JButton("Réserver");
     private final JButton cancelResButton = new JButton("Annuler la réservation");
+    private final JButton ajoutLivre = new JButton("Ajouter un livre");
+    private final JButton suprLivre = new JButton("Supprimer un livre");
 
     private final JButton infoChoisir = new JButton("Choisir");
     private final JButton infoSauvegarder = new JButton("Sauvegarder");
@@ -386,6 +388,8 @@ public class BibliPanel extends JPanel {
 
         panelBoutons.add(searchButton);
         panelBoutons.add(reserveButton);
+        panelBoutons.add(ajoutLivre);
+        panelBoutons.add(suprLivre);
 
         c.gridx = 0;
         c.gridy = 3;
