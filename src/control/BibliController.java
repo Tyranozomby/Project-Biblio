@@ -1,5 +1,6 @@
 package control;
 
+import constantes.Constantes;
 import modele.Emprunt;
 import modele.Etudiant;
 import modele.Livre;
@@ -71,13 +72,14 @@ public class BibliController implements ActionListener {
                 } else {
                     bibliPanel.setZoneFill(null);
                 }
-
+                bibliPanel.updateJCombobox(DB);
                 break;
             case "InfoEtu-Sauvegarder":
                 id = bibliPanel.getJComboBoxID();
                 if (id > 0) {
                     DB.setStudent(bibliPanel.getInfoEtudiant(id));
                 }
+                bibliPanel.updateJCombobox(DB);
                 break;
 
             case "InfoEtu-Nouveau":
@@ -86,6 +88,7 @@ public class BibliController implements ActionListener {
                     DB.createStudent(bibliPanel.getInfoEtudiant(id));
                 }
                 System.out.println("InfoEtu-Nouveau");
+                bibliPanel.updateJCombobox(DB);
                 break;
 
             case "InfoEtu-Supprimer":

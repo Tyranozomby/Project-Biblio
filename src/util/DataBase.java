@@ -148,6 +148,46 @@ public class DataBase {
 
     /* LIVRES */
 
+    public void createBook(String author, String title) {
+        try {
+            stmt.executeQuery("INSERT INTO LIVRE ( AUTEUR, TITRE) VALUES ('" + author + "','" + title + "')");
+
+        }
+        catch (SQLException e) {
+                System.out.println("Erreur lors de la modification");
+                e.printStackTrace();
+        }
+
+    }
+
+    public void suprBook(String author, String title) {
+        try {
+            int id = -1;
+
+            try {
+                ResultSet rSet = stmt.executeQuery("SELECT ID_LIV FROM LIVRE WHERE auteur = '" + author + "' AND titre='" + title + "'");
+                while (rSet.next()) {
+                    id = Integer.parseInt(rSet.getString(1));
+                }
+            }catch (SQLException e) {
+                System.out.println("Erreur lors de la recherche");
+                e.printStackTrace();
+            }
+
+            if ( id > 0 ){
+                System.out.println("ok");
+                stmt.executeQuery("DELETE from ETUDIANT WHERE ID_ET = " + id);
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Erreur lors de la supression");
+            e.printStackTrace();
+        }
+    }
+
+
+
+
     public ArrayList<Livre> researchCorresponding(String auteur, String titre) {
         ArrayList<Livre> liste = new ArrayList<>();
         try {

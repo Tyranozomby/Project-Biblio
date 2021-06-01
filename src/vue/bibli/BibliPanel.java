@@ -313,7 +313,7 @@ public class BibliPanel extends JPanel {
         JPanel newRes = new JPanel();
         newRes.setOpaque(false);
         newRes.setLayout(new GridBagLayout());
-        c.insets = new Insets(10, 10, 10, 10);
+        c.insets = new Insets(10, 10,10, 10);
 
         //
         c.gridx = 1;
@@ -521,6 +521,10 @@ public class BibliPanel extends JPanel {
         return auteurField.getText();
     }
 
+    public int getID(){
+        return Integer.parseInt(idEtudiantField.getText());
+    }
+
 
     public void addListener(BibliController controller) {
         // RETOUR LIVRES
@@ -546,7 +550,35 @@ public class BibliPanel extends JPanel {
         infoSupprimer.setActionCommand("InfoEtu-Supprimer");
         infoSupprimer.addActionListener(controller);
 
+        // resEtudiant
+        searchButton.setActionCommand("resEtudiant-search");
+        searchButton.addActionListener(controller);
+        reserveButton.setActionCommand("resEtudiant-reserver");
+        reserveButton.addActionListener(controller);
+        ajoutLivre.setActionCommand("resEtudiant-ajout");
+        ajoutLivre.addActionListener(controller);
+        suprLivre.setActionCommand("resEtudiant-suppression");
+        suprLivre.addActionListener(controller);
+
         //TODO Remplir avec les objets nécessitant un actionListener. Ne pas oublier setActionCommand("mot-clé")
     }
 
+    public void updateJCombobox(DataBase DB ){
+        infoComboBox.removeAllItems();
+        infoComboBox.addItem(new Etudiant(0, "Étudiant", "Créer", "", ""));
+
+        for (Etudiant etu : DB.setTabStudent()) {
+            infoComboBox.addItem(etu);
+        }
+        modeleEmpAll.setListeEmp(DB.getEmprunts());
+    }
+
+    public Livre getSelectedBook() {
+        int row = tableLiv.getSelectedRow();
+        if (row == -1) { // No book selected
+            return null;
+        }
+        return modeleLiv.getValueAt(row);
+    }
 }
+
