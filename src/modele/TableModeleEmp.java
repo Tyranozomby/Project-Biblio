@@ -47,6 +47,9 @@ public class TableModeleEmp implements TableModel {
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
         Emprunt emp = listeEmp[rowIndex];
+        if (emp.getEtudiant() == null) {
+            return null;
+        }
         if (columnIndex == 0) {
             return emp.getLivre().getTitre();
         } else if (columnIndex == 1) {

@@ -110,14 +110,13 @@ public class StudentPanel extends JPanel {
      * @return JPanel
      */
     private JPanel ongletProfil(GridBagConstraints c) {
-        JPanel monProfil = new JPanel();
+        JPanel monProfil = new JPanel(new GridBagLayout());
         monProfil.setOpaque(false);
-        monProfil.setLayout(new GridBagLayout());
 
         c.gridx = 0;
         c.gridy = 0;
         c.gridwidth = 1;
-        JLabel label = new JLabel("Mon Profil");
+        JLabel label = new JLabel("Mon Profil", JLabel.CENTER);
         label.setFont(Constantes.TITLE_FONT);
         monProfil.add(label, c);
 
@@ -212,9 +211,8 @@ public class StudentPanel extends JPanel {
      * @return JPanel
      */
     private JPanel ongletMesRes(GridBagConstraints c) {
-        JPanel mesRes = new JPanel();
+        JPanel mesRes = new JPanel(new GridBagLayout());
         mesRes.setOpaque(false);
-        mesRes.setLayout(new GridBagLayout());
 
         c.insets = new Insets(8, 8, 50, 8);
 
@@ -223,7 +221,7 @@ public class StudentPanel extends JPanel {
         c.gridwidth = 2;
         c.fill = GridBagConstraints.NONE;
         c.anchor = GridBagConstraints.CENTER;
-        JLabel label = new JLabel("Mes réservations");
+        JLabel label = new JLabel("Mes réservations", JLabel.CENTER);
         label.setFont(Constantes.TITLE_FONT);
         mesRes.add(label, c);
 
@@ -463,9 +461,13 @@ public class StudentPanel extends JPanel {
         return student;
     }
 
-    public String getTitre() { return titreField.getText(); }
+    public String getTitre() {
+        return titreField.getText();
+    }
 
-    public String getAuteur() { return auteurField.getText(); }
+    public String getAuteur() {
+        return auteurField.getText();
+    }
 
     /**
      * Method to get which book has been selected
