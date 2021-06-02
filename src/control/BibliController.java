@@ -3,6 +3,7 @@ package control;
 import modele.Emprunt;
 import modele.Etudiant;
 import modele.Livre;
+import modele.Reservation;
 import util.DataBase;
 import vue.bibli.BibliPanel;
 
@@ -28,16 +29,14 @@ public class BibliController implements ActionListener {
         this.DB = DB;
 
         this.bibliPanel.addListener(this);
-
-        bibliPanel.setBookList(DB.researchCorresponding(bibliPanel.getAuteur(), bibliPanel.getTitre()));
-
-        //TODO remplir constructeur
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        Reservation res;
         Etudiant etu;
         Emprunt emp;
+        Livre book;
         int id;
         switch (e.getActionCommand()) {
             // RETOUR
@@ -91,36 +90,55 @@ public class BibliController implements ActionListener {
 
             case "InfoEtu-Supprimer":
                 id = bibliPanel.getJComboBoxID();
-                System.out.println(id);
-                DB.deleteStudent(id);
-                System.out.println("InfoEtu-Supprimer");
-                bibliPanel.updateJCombobox(DB);
-                break;
-            //
-            case "resEtudiant-search":
-                bibliPanel.setBookList(DB.researchCorresponding(bibliPanel.getAuteur(), bibliPanel.getTitre()));
-                System.out.println("resEtudiant-search");
+                if (id != 0) {
+                    DB.deleteStudent(id);
+                    bibliPanel.updateJCombobox(DB);
+                }
                 break;
 
-            case "resEtudiant-ajout":
-                DB.createBook(bibliPanel.getAuteur(), bibliPanel.getTitre());
-                System.out.println("resEtudiant-ajout");
+            // GESTION LIVRE
+            case "Livre-Search":
+                bibliPanel.setBookList(DB.researchCorresponding(bibliPanel.getLivTitre(), bibliPanel.getLivAuteur()));
+                break;
+            case "Livre-Ajout":
+                if (!DB.canAddBook(bibliPanel.getLivTitre(), bibliPanel.getLivAuteur())) {
+                    break;
+                }
+                DB.createBook(bibliPanel.getLivTitre(), bibliPanel.getLivAuteur());
+                bibliPanel.setBookList(DB.researchCorresponding("", ""));
+                break;
+            case "Livre-Suppression":
+                book = bibliPanel.getSelectedBook();
+                if (book != null) {
+                    DB.supprBook(book);
+                }
+                bibliPanel.setBookList(DB.researchCorresponding(bibliPanel.getLivTitre(), bibliPanel.getLivAuteur()));
                 break;
 
-            case "resEtudiant-suppression":
-                Livre book = bibliPanel.getSelectedBook();
-                DB.supprBook(book.getAuteur(), book.getTitre());
-                System.out.println("resEtudiant-Suppr");
+            // VALIDER RES
+            case "Res-Recherche":
+                bibliPanel.setResAllList(DB.getReservations(bibliPanel.getResNom(), bibliPanel.getResPrenom(), bibliPanel.getResTitre(), bibliPanel.getResAuteur()));
+                break;
+            case "Res-Valider":
+                res = bibliPanel.getSelectedRes();
+                if (res != null) {
+                    id = DB.exemplaireLibrePour(res.getLivre());
+                    if (id != 0) {
+                        DB.validerRes(res, id);
+                        bibliPanel.setResAllList(DB.getReservations(bibliPanel.getResNom(), bibliPanel.getResPrenom(), bibliPanel.getResTitre(), bibliPanel.getResAuteur()));
+                        bibliPanel.setEmpAllList(DB.getEmprunts(bibliPanel.getRetourNom(), bibliPanel.getRetourPrenom(), bibliPanel.getRetourTitre(), bibliPanel.getRetourAuteur()));
+                    }
+                }
                 break;
         }
     }
 
-    public KeyAdapter enterListener(Object obj) {
+    public KeyAdapter enterListener(Object obj, String command) {
         return new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                    actionPerformed(new ActionEvent(obj, 0, "Retour-Recherche"));
+                    actionPerformed(new ActionEvent(obj, 0, command));
                 }
             }
         };

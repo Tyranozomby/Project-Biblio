@@ -13,6 +13,18 @@ public class BibliPanel extends JPanel {
 
     private final JLabel title = new JLabel();
 
+    // Gestion Étudiants
+    private final JTextField infoEmail = new JTextField();
+    private final JTextField infoNom = new JTextField();
+    private final JTextField infoPrenom = new JTextField();
+    private final JTextField infoMdp = new JTextField();
+
+    private final JComboBox<Etudiant> infoComboBox = new JComboBox<>();
+    private final JLabel labelID = new JLabel("", JLabel.CENTER);
+
+    private final JButton infoSauvegarder = new JButton("Sauvegarder");
+    private final JButton infoSupprimer = new JButton("Supprimer");
+
     // Gestion Livres
     private final JTextField livreTitre = new JTextField();
     private final JTextField livreAuteur = new JTextField();
@@ -21,17 +33,14 @@ public class BibliPanel extends JPanel {
     private final JButton livreAjouter = new JButton("Ajouter un livre");
     private final JButton livreSuppr = new JButton("Supprimer un livre");
 
-    // Info Étudiants
-    private final JTextField infoEmail = new JTextField();
-    private final JTextField infoNom = new JTextField();
-    private final JTextField infoPrenom = new JTextField();
-    private final JTextField infoMdp = new JTextField();
-    private final JComboBox<Etudiant> infoComboBox = new JComboBox<>();
+    // Valider Réservation
+    private final JTextField resNom = new JTextField();
+    private final JTextField resPrenom = new JTextField();
+    private final JTextField resTitre = new JTextField();
+    private final JTextField resAuteur = new JTextField();
 
-    private final JLabel labelID = new JLabel("ID", JLabel.CENTER);
-
-    private final JButton infoSauvegarder = new JButton("Sauvegarder");
-    private final JButton infoSupprimer = new JButton("Supprimer");
+    private final JButton resRecherche = new JButton("Rechercher");
+    private final JButton resValider = new JButton("Valider la réservation");
 
     // Retour Emprunts
     private final JTextField retourNom = new JTextField();
@@ -43,42 +52,46 @@ public class BibliPanel extends JPanel {
     private final JButton retourRendu = new JButton("Livre bien rendu");
     private final JButton retourRelance = new JButton("Relancer l'élève");
 
+    // Nouvel Emprunt
+    private final JTextField empNom = new JTextField();
+    private final JTextField empPrenom = new JTextField();
+    private final JTextField empTitre = new JTextField();
+    private final JTextField empAuteur = new JTextField();
+
+    private final JButton empAjout = new JButton("Ajouter");
+
     // Tables et Modèles
     private final TableModeleLiv modeleLiv = new TableModeleLiv();
-    private final TableModeleRes modeleRes = new TableModeleRes();
+    private final TableModeleResAll modeleResAll = new TableModeleResAll();
     private final TableModeleEmpAll modeleEmpAll = new TableModeleEmpAll();
     private final JTable tableLiv = new JTable(modeleLiv);
-    private final JTable tableRes = new JTable(modeleRes);
+    private final JTable tableResAll = new JTable(modeleResAll);
     private final JTable tableEmpAll = new JTable(modeleEmpAll);
 
     private final JLabel infoTxtLiv = new JLabel();
 
 
     public BibliPanel() {
-
         setOpaque(false);
         setLayout(new BorderLayout());
 
         //Panel Titre
-        title.setText("Bonjour bernadette Woula");
+        title.setText("Bonjour Bibliothécaire");
         JPanel panelTitre = panelTitre();
 
         //Content Panel
-
         JPanel content = new JPanel();
         CardLayout layout = new CardLayout();
         content.setLayout(layout);
         content.setOpaque(false);
 
-        GridBagConstraints c = new GridBagConstraints();
-
         //Ajout onglets
-
         JTabbedPane onglets = new JTabbedPane();
-        onglets.add("Gestion Étudiant", infoEtudiant());
-        onglets.add("Nouvel emprunt", nouvelEmprunt()); //Pouvoir voir les exemplaires, les livres non rendus/rendu /Valider les emprunts
-        onglets.add("Gérer livres", gererLivres());
-        onglets.add("Retours emprunts", retourLivres());
+        onglets.add("Gestion Étudiants", infoEtudiant());
+        onglets.add("Gestion Livres", gererLivres());
+        onglets.add("Valider Réservation", validerRes());
+        onglets.add("Nouvel Emprunt", nouvelEmprunt());
+        onglets.add("Retour Emprunts", retourEmprunts());
         onglets.setFocusable(false);
 
         content.add(onglets, BorderLayout.CENTER);
@@ -106,12 +119,101 @@ public class BibliPanel extends JPanel {
         return panelTitre;
     }
 
+    private JPanel nouvelEmprunt() {
+        JPanel panel = new JPanel(new GridBagLayout());
+        panel.setOpaque(false);
+
+        GridBagConstraints c = new GridBagConstraints();
+
+        return panel;
+    }
+
+    private JPanel validerRes() {
+        JPanel panel = new JPanel(new GridBagLayout());
+        panel.setOpaque(false);
+
+        GridBagConstraints c = new GridBagConstraints();
+        c.insets = new Insets(8, 8, 8, 8);
+
+        c.gridx = 0;
+        c.gridy = 1;
+        tableResAll.setFocusable(false);
+        tableResAll.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        tableResAll.setRowHeight(15);
+        tableResAll.getColumnModel().getColumn(0).setPreferredWidth(300);  //
+        tableResAll.getColumnModel().getColumn(1).setPreferredWidth(250);  // Column size
+        tableResAll.getColumnModel().getColumn(2).setPreferredWidth(150);  //
+        tableResAll.getColumnModel().getColumn(3).setPreferredWidth(100);  //
+
+        JScrollPane scrollPane = new JScrollPane(tableResAll);
+        scrollPane.setPreferredSize(new Dimension(800, 200));
+        scrollPane.getViewport().setBackground(Constantes.WHITE);
+        scrollPane.setBorder(Constantes.BORDER);
+        panel.add(scrollPane, c);
+
+        c.insets = new Insets(8, 250, 8, 250);
+        c.gridx = 0;
+        c.gridy = 0;
+        c.fill = GridBagConstraints.HORIZONTAL;
+        JPanel fields = new JPanel(new GridLayout(4, 2, 10, 10));
+        fields.setOpaque(false);
+
+        JLabel nomEtu = new JLabel("Nom élève:");
+        nomEtu.setLabelFor(resNom);
+        nomEtu.setDisplayedMnemonic('n');
+        fields.add(nomEtu);
+
+        resNom.setFont(Constantes.FIELD_FONT);
+        resNom.setBorder(Constantes.BORDER);
+        fields.add(resNom);
+
+        JLabel prenomEtu = new JLabel("Prénom élève:");
+        prenomEtu.setLabelFor(resPrenom);
+        prenomEtu.setDisplayedMnemonic('p');
+        fields.add(prenomEtu);
+
+        resPrenom.setFont(Constantes.FIELD_FONT);
+        resPrenom.setBorder(Constantes.BORDER);
+        fields.add(resPrenom);
+
+        JLabel titre = new JLabel("Titre:");
+        titre.setLabelFor(resTitre);
+        titre.setDisplayedMnemonic('t');
+        fields.add(titre);
+
+        resTitre.setFont(Constantes.FIELD_FONT);
+        resTitre.setBorder(Constantes.BORDER);
+        fields.add(resTitre);
+
+        JLabel auteur = new JLabel("Auteur:");
+        auteur.setLabelFor(resAuteur);
+        auteur.setDisplayedMnemonic('a');
+        fields.add(auteur);
+
+        resAuteur.setFont(Constantes.FIELD_FONT);
+        resAuteur.setBorder(Constantes.BORDER);
+        fields.add(resAuteur);
+        panel.add(fields, c);
+
+        c.gridy = 2;
+        JPanel buttons = new JPanel(new GridLayout(1, 3, 10, 10));
+        buttons.setOpaque(false);
+        resRecherche.setFocusPainted(false);    //
+        resValider.setFocusPainted(false);      // FOCUS PAINTED FALSE
+        buttons.add(resRecherche);  //
+        buttons.add(resValider);    // ADD
+
+        panel.add(buttons, c);
+
+        return panel;
+    }
+
     /**
      * Method used to get panel for books' return and remind late students
      *
      * @return a JPanel
      */
-    private JPanel retourLivres() {
+    private JPanel retourEmprunts() {
         JPanel panel = new JPanel(new GridBagLayout());
         panel.setOpaque(false);
 
@@ -307,7 +409,6 @@ public class BibliPanel extends JPanel {
 
         c.insets = new Insets(10, 10, 10, 10);
 
-
         c.gridx = 1;
         c.gridy = 0;
         c.anchor = GridBagConstraints.CENTER;
@@ -390,21 +491,12 @@ public class BibliPanel extends JPanel {
         tableLiv.setRowHeight(15);
 
         JScrollPane scrollPane = new JScrollPane(tableLiv);
-        scrollPane.setPreferredSize(new Dimension(400, 218));
+        scrollPane.setPreferredSize(new Dimension(400, 222));
         scrollPane.getViewport().setBackground(Constantes.WHITE);
         scrollPane.setBorder(Constantes.BORDER);
 
         newRes.add(scrollPane, c);
         return newRes;
-    }
-
-    public JPanel nouvelEmprunt() {
-        JPanel panel = new JPanel(new GridBagLayout());
-        panel.setOpaque(false);
-
-        GridBagConstraints c = new GridBagConstraints();
-
-        return panel;
     }
 
 
@@ -419,6 +511,8 @@ public class BibliPanel extends JPanel {
             infoComboBox.addItem(etu);
         }
         modeleEmpAll.setListeEmp(DB.getEmprunts());
+        modeleResAll.setListeRes(DB.getReservations());
+        modeleLiv.setListeLivres(DB.researchCorresponding("", ""));
     }
 
     public void setBookList(ArrayList<Livre> liste) {
@@ -466,7 +560,7 @@ public class BibliPanel extends JPanel {
     // INFO ÉTUDIANTS
     public int getJComboBoxID() {
         Etudiant etu = (Etudiant) infoComboBox.getSelectedItem();
-        if(etu == null) return -1;
+        if (etu == null) return -1;
         return etu.getId();
     }
 
@@ -500,16 +594,16 @@ public class BibliPanel extends JPanel {
         infoComboBox.setSelectedIndex(0);
     }
 
-    public void setlabelID(String ID){
+    public void setlabelID(String ID) {
         labelID.setText("ID :        " + ID);
     }
 
     // RÉSERVATIONS
-    public String getTitre() {
+    public String getLivTitre() {
         return livreTitre.getText();
     }
 
-    public String getAuteur() {
+    public String getLivAuteur() {
         return livreAuteur.getText();
     }
 
@@ -521,21 +615,37 @@ public class BibliPanel extends JPanel {
         return modeleLiv.getValueAt(row);
     }
 
+    // RÉSERVATIONS
+    public String getResNom() {
+        return resNom.getText();
+    }
+
+    public String getResPrenom() {
+        return resPrenom.getText();
+    }
+
+    public String getResTitre() {
+        return resTitre.getText();
+    }
+
+    public String getResAuteur() {
+        return resAuteur.getText();
+    }
+
+    public Reservation getSelectedRes() {
+        int row = tableResAll.getSelectedRow();
+        if (row == -1) {
+            return null;
+        }
+        return modeleResAll.getValueAt(row);
+    }
+
+    public void setResAllList(ArrayList<Reservation> res) {
+        modeleResAll.setListeRes(res);
+    }
+
 
     public void addListener(BibliController controller) {
-        // RETOUR LIVRES
-        retourNom.addKeyListener(controller.enterListener(retourNom));
-        retourPrenom.addKeyListener(controller.enterListener(retourPrenom));
-        retourTitre.addKeyListener(controller.enterListener(retourTitre));
-        retourAuteur.addKeyListener(controller.enterListener(retourAuteur));
-
-        retourRecherche.setActionCommand("Retour-Recherche");
-        retourRecherche.addActionListener(controller);
-        retourRendu.setActionCommand("Retour-Rendu");
-        retourRendu.addActionListener(controller);
-        retourRelance.setActionCommand("Retour-Relance");
-        retourRelance.addActionListener(controller);
-
         // INFO ÉTUDIANTS
         infoComboBox.setActionCommand("InfoEtu-Choisir");
         infoComboBox.addActionListener(controller);
@@ -544,17 +654,46 @@ public class BibliPanel extends JPanel {
         infoSupprimer.setActionCommand("InfoEtu-Supprimer");
         infoSupprimer.addActionListener(controller);
 
-        // resEtudiant
-        livreSearch.setActionCommand("resEtudiant-search");
+        // GESTION LIVRES
+        livreTitre.addKeyListener(controller.enterListener(livreTitre, "Livre-Search"));
+        livreAuteur.addKeyListener(controller.enterListener(livreAuteur, "Livre-Search"));
+
+        livreSearch.setActionCommand("Livre-Search");
         livreSearch.addActionListener(controller);
-        livreAjouter.setActionCommand("resEtudiant-ajout");
+        livreAjouter.setActionCommand("Livre-Ajout");
         livreAjouter.addActionListener(controller);
-        livreSuppr.setActionCommand("resEtudiant-suppression");
+        livreSuppr.setActionCommand("Livre-Suppression");
         livreSuppr.addActionListener(controller);
 
-        //TODO Remplir avec les objets nécessitant un actionListener. Ne pas oublier setActionCommand("mot-clé")
-    }
+        // VALIDER RÉSERVATION
+        resNom.addKeyListener(controller.enterListener(resNom, "Res-Recherche"));
+        resPrenom.addKeyListener(controller.enterListener(resPrenom, "Res-Recherche"));
+        resTitre.addKeyListener(controller.enterListener(resTitre, "Res-Recherche"));
+        resAuteur.addKeyListener(controller.enterListener(resAuteur, "Res-Recherche"));
 
+        resRecherche.setActionCommand("Res-Recherche");
+        resRecherche.addActionListener(controller);
+        resValider.setActionCommand("Res-Valider");
+        resValider.addActionListener(controller);
+
+        // NOUVEL EMPRUNT
+
+
+        // RETOUR EMPRUNT
+        retourNom.addKeyListener(controller.enterListener(retourNom, "Retour-Recherche"));
+        retourPrenom.addKeyListener(controller.enterListener(retourPrenom, "Retour-Recherche"));
+        retourTitre.addKeyListener(controller.enterListener(retourTitre, "Retour-Recherche"));
+        retourAuteur.addKeyListener(controller.enterListener(retourAuteur, "Retour-Recherche"));
+
+        retourRecherche.setActionCommand("Retour-Recherche");
+        retourRecherche.addActionListener(controller);
+        retourRendu.setActionCommand("Retour-Rendu");
+        retourRendu.addActionListener(controller);
+        retourRelance.setActionCommand("Retour-Relance");
+        retourRelance.addActionListener(controller);
+
+
+    }
 
 
 }

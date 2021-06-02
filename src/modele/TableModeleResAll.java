@@ -8,17 +8,16 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class TableModeleEmpAll implements TableModel {
+public class TableModeleResAll implements TableModel {
 
-    private ArrayList<Emprunt> listeEmp = new ArrayList<>();
+    private ArrayList<Reservation> listeRes = new ArrayList<>();
     private static final String[] header = {"Titre", "Auteur", "Étudiant", "Fin emprunt"};
 
     private final ArrayList<TableModelListener> listeners = new ArrayList<>();
 
-
     @Override
     public int getRowCount() {
-        return listeEmp.size();
+        return listeRes.size();
     }
 
     @Override
@@ -43,19 +42,19 @@ public class TableModeleEmpAll implements TableModel {
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        Emprunt emp = listeEmp.get(rowIndex);
+        Reservation res = listeRes.get(rowIndex);
         if (columnIndex == 0) {
-            return emp.getLivre().getTitre();
+            return res.getLivre().getTitre();
         } else if (columnIndex == 1) {
-            return emp.getLivre().getAuteur();
+            return res.getLivre().getAuteur();
         } else if (columnIndex == 2) {
-            return emp.getEtudiant().getNom() + " " + emp.getEtudiant().getPrenom();
+            return res.getEtudiant().getNom() + " " + res.getEtudiant().getPrenom();
         } else if (columnIndex == 3) {
             try {
-                if (new Date().after(new SimpleDateFormat("dd MMM yyyy").parse(emp.getFin()))) {
-                    return emp.getFin() + " /!\\";
+                if (new Date().after(new SimpleDateFormat("dd MMM yyyy").parse(res.getFin()))) {
+                    return res.getFin() + " /!\\";
                 } else {
-                    return emp.getFin();
+                    return res.getFin();
                 }
             } catch (ParseException e) {
                 e.printStackTrace();
@@ -64,8 +63,8 @@ public class TableModeleEmpAll implements TableModel {
         return null;
     }
 
-    public Emprunt getValueAt(int row) {
-        return listeEmp.get(row);
+    public Reservation getValueAt(int row) {
+        return listeRes.get(row);
     }
 
     @Override
@@ -82,8 +81,8 @@ public class TableModeleEmpAll implements TableModel {
         listeners.remove(l);
     }
 
-    public void setListeEmp(ArrayList<Emprunt> list) {
-        listeEmp = list;
+    public void setListeRes(ArrayList<Reservation> list) {
+        listeRes = list;
         for (TableModelListener listener : listeners) {
             listener.tableChanged(new TableModelEvent(this));
         }

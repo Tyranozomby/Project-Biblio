@@ -35,5 +35,6 @@ public interface Constantes {
 
     int MAX_RES = 5;
     int MAX_BOOK = 5;
+    int LENGTH_RES = 15;
 
 }

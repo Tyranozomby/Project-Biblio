@@ -148,7 +148,7 @@ public class DataBase {
 
     /* LIVRES */
 
-    public void createBook(String author, String title) {
+    public void createBook(String title, String author) {
         try {
             stmt.executeQuery("INSERT INTO LIVRE ( AUTEUR, TITRE) VALUES ('" + author + "','" + title + "')");
 
@@ -158,32 +158,21 @@ public class DataBase {
         }
     }
 
-    public void supprBook(String author, String title) {
+    public void supprBook(Livre liv) {
         try {
-            int id = 0;
-            try {
-                ResultSet rSet = stmt.executeQuery("SELECT ID_LIV FROM LIVRE WHERE auteur = '" + author + "' AND titre='" + title + "'");
-                while (rSet.next()) {
-                    id = rSet.getInt(1);
-                }
-            } catch (SQLException e) {
-                System.out.println("Erreur lors de la recherche");
-                e.printStackTrace();
-            }
-
+            int id = liv.getId();
             if (id != 0) {
                 stmt.executeQuery("DELETE from RESERVATION WHERE ID_LIV = " + id);
                 stmt.executeQuery("DELETE from EXEMPLAIRE WHERE ID_LIV = " + id);
                 stmt.executeQuery("DELETE from LIVRE WHERE ID_LIV = " + id);
             }
-
         } catch (SQLException e) {
             System.out.println("Erreur lors de la suppression");
             e.printStackTrace();
         }
     }
 
-    public ArrayList<Livre> researchCorresponding(String auteur, String titre) {
+    public ArrayList<Livre> researchCorresponding(String titre, String auteur) {
         ArrayList<Livre> liste = new ArrayList<>();
         try {
             ResultSet rSet = stmt.executeQuery("SELECT ID_LIV, AUTEUR,TITRE FROM LIVRE WHERE UPPER(AUTEUR) like UPPER('%" + auteur + "%') and UPPER(TITRE) like UPPER('%" + titre + "%') ORDER BY TITRE, AUTEUR");
@@ -209,6 +198,20 @@ public class DataBase {
         }
     }
 
+    public boolean canAddBook(String titre, String auteur) {
+        ResultSet rSet;
+        if (titre.equals("") || auteur.equals("")) {
+            return false;
+        }
+        try {
+            rSet = stmt.executeQuery("SELECT * FROM LIVRE WHERE UPPER(TITRE) = UPPER('" + titre + "') and UPPER(AUTEUR) = UPPER('" + auteur + "')");
+            return !rSet.next();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     /* RESERVATIONS */
 
     public void addReservation(Livre selectedBook, Etudiant student) {
@@ -216,7 +219,7 @@ public class DataBase {
         SimpleDateFormat fmt = new SimpleDateFormat("dd-MM-yyyy");
         fmt.setCalendar(cal);
         String date_deb = fmt.format(cal.getTime());
-        cal.add(GregorianCalendar.DAY_OF_MONTH, 15);
+        cal.add(GregorianCalendar.DAY_OF_MONTH, Constantes.LENGTH_RES);
         String date_fin = fmt.format(cal.getTime());
 
         try {
@@ -232,17 +235,56 @@ public class DataBase {
         SimpleDateFormat fmt = new SimpleDateFormat("dd MMM yyyy");
         int i = 0;
         try {
-            ResultSet rSet = stmt.executeQuery("SELECT DATE_RES, DATE_FIN_RES, LIVRE.ID_LIV, AUTEUR, TITRE FROM RESERVATION, LIVRE WHERE RESERVATION.ID_LIV = LIVRE.ID_LIV and id_et = " + student.getId() + " ORDER BY DATE_FIN_RES, TITRE, AUTEUR");
+            ResultSet rSet = stmt.executeQuery("SELECT DATE_FIN_RES, LIVRE.ID_LIV, AUTEUR, TITRE FROM RESERVATION, LIVRE WHERE RESERVATION.ID_LIV = LIVRE.ID_LIV and id_et = " + student.getId() + " ORDER BY DATE_FIN_RES, TITRE, AUTEUR");
             while (rSet.next()) {
-                String deb = fmt.format(rSet.getDate(1));
-                String fin = fmt.format(rSet.getDate(2));
-                Livre liv = new Livre(Integer.parseInt(rSet.getString(3)), rSet.getString(4), rSet.getString(5));
+                String fin = fmt.format(rSet.getDate(1));
+                Livre liv = new Livre(Integer.parseInt(rSet.getString(2)), rSet.getString(3), rSet.getString(4));
 
-                listeRes[i] = new Reservation(liv, deb, fin);
+                listeRes[i] = new Reservation(liv, student, fin);
                 i++;
             }
             for (; i < Constantes.MAX_RES; i++) {
                 listeRes[i] = new Reservation();
+            }
+            return listeRes;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public ArrayList<Reservation> getReservations() {
+        ArrayList<Reservation> listeRes = new ArrayList<>();
+        SimpleDateFormat fmt = new SimpleDateFormat("dd MMM yyyy");
+
+        try {
+            ResultSet rSet = stmt.executeQuery("SELECT DATE_FIN_RES, LIVRE.ID_LIV, AUTEUR, TITRE, ETUDIANT.ID_ET, PRENOM, NOM, EMAIL, MDP FROM RESERVATION, LIVRE, ETUDIANT WHERE RESERVATION.ID_LIV = LIVRE.ID_LIV and RESERVATION.ID_ET = ETUDIANT.ID_ET ORDER BY DATE_FIN_RES, TITRE, AUTEUR, NOM, PRENOM");
+            while (rSet.next()) {
+                String fin = fmt.format(rSet.getDate(1));
+                Livre liv = new Livre(rSet.getInt(2), rSet.getString(3), rSet.getString(4));
+                Etudiant student = new Etudiant(rSet.getInt(5), rSet.getString(6), rSet.getString(7), rSet.getString(8), rSet.getString(9));
+
+                listeRes.add(new Reservation(liv, student, fin));
+            }
+            return listeRes;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public ArrayList<Reservation> getReservations(String nom, String prenom, String titre, String auteur) {
+        ArrayList<Reservation> listeRes = new ArrayList<>();
+        SimpleDateFormat fmt = new SimpleDateFormat("dd MMM yyyy");
+
+        try {
+            ResultSet rSet = stmt.executeQuery("SELECT DATE_FIN_RES, LIVRE.ID_LIV, AUTEUR, TITRE, ETUDIANT.ID_ET, PRENOM, NOM, EMAIL, MDP FROM RESERVATION, LIVRE, ETUDIANT WHERE RESERVATION.ID_LIV = LIVRE.ID_LIV and RESERVATION.ID_ET = ETUDIANT.ID_ET and UPPER(NOM) like UPPER('%" + nom + "%') and UPPER(PRENOM) like UPPER('%" + prenom + "%') and UPPER(AUTEUR) like UPPER('%" + auteur + "%') and UPPER(TITRE) like UPPER('%" + titre + "%') ORDER BY DATE_FIN_RES, TITRE, AUTEUR, NOM, PRENOM ");
+            while (rSet.next()) {
+                Livre liv = new Livre(rSet.getInt(2), rSet.getString(3), rSet.getString(4));
+                String fin = fmt.format(rSet.getDate(1));
+                Etudiant student = new Etudiant(rSet.getInt(5), rSet.getString(6), rSet.getString(7), rSet.getString(8), rSet.getString(9));
+
+                listeRes.add(new Reservation(liv, student, fin));
             }
             return listeRes;
         } catch (SQLException e) {
@@ -257,6 +299,39 @@ public class DataBase {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    //TODO canValideReserve faux si livre déjà emprunté sinon vrai
+
+    public void validerRes(Reservation res, int id) {
+        GregorianCalendar cal = new GregorianCalendar();
+        SimpleDateFormat fmt = new SimpleDateFormat("dd MMM yyyy");
+        fmt.setCalendar(cal);
+        String deb = fmt.format(cal.getTime());
+        cal.add(GregorianCalendar.DAY_OF_MONTH, Constantes.LENGTH_RES);
+        String fin = fmt.format(cal.getTime());
+        try {
+            stmt.executeQuery("INSERT INTO EMPRUNT(DATE_EMP, DATE_RETOUR, ID_EX, ID_ET) values ('" + deb + "', '" + fin + "', " + id + ", " + res.getEtudiant().getId() + ")");
+            stmt.executeQuery("DELETE FROM RESERVATION WHERE ID_LIV = " + res.getLivre().getId() + " and ID_ET = " + res.getEtudiant().getId());
+        } catch (SQLException e) {
+            System.out.println("La réservation n'a pas pu être validée");
+            e.printStackTrace();
+        }
+    }
+
+    /* EXEMPLAIRES */
+
+    public int exemplaireLibrePour(Livre liv) {
+        try {
+            ResultSet rSet = stmt.executeQuery("SELECT MIN(ID_EX) FROM EXEMPLAIRE WHERE ID_EX not in (SELECT ID_EX FROM EMPRUNT) and id_liv = " + liv.getId());
+            if (rSet.next()) {
+                return rSet.getInt(1);
+            }
+        } catch (SQLException e) {
+            System.out.println("Livre invalide");
+            e.printStackTrace();
+        }
+        return 0;
     }
 
     /* EMPRUNTS */

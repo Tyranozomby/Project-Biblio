@@ -3,23 +3,23 @@ package modele;
 public class Reservation {
 
     private final Livre liv;
-    private final String date_deb;
     private final String date_fin;
+    private final Etudiant student;
 
-    public Reservation(Livre livre, String deb, String fin) {
+    public Reservation(Livre livre, Etudiant stu, String fin) {
         liv = livre;
-        date_deb = deb;
+        student = stu;
         date_fin = fin;
     }
 
     public Reservation() {
         liv = new Livre();
-        date_deb = "";
+        student = null;
         date_fin = "";
     }
 
     public String toString() {
-        return "Livre: " + liv + " | Début: " + date_deb + " | Fin: " + date_fin;
+        return "Livre: " + liv + " | Étudiant: " + student + " | Fin: " + date_fin;
     }
 
     public Livre getLivre() {
@@ -28,5 +28,9 @@ public class Reservation {
 
     public String getFin() {
         return date_fin;
+    }
+
+    public Etudiant getEtudiant() {
+        return student;
     }
 }
