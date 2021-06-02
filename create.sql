@@ -169,9 +169,9 @@ BEGIN
 end ;
 /
 
-insert into EMPRUNT (date_emp, date_retour, id_ex, id_et) VALUES ('06-05-2021','13-05-2021','1','2');
-insert into EMPRUNT (date_emp, date_retour, id_ex, id_et) VALUES ('06-05-2021','13-05-2021','3','2');
-insert into EMPRUNT (date_emp, date_retour, id_ex, id_et) VALUES ('06-05-2021','13-05-2021','5','2');
+insert into EMPRUNT (date_emp, date_retour, id_ex, id_et) VALUES ('06-05-2021','13-05-2021','42','2');
+insert into EMPRUNT (date_emp, date_retour, id_ex, id_et) VALUES ('06-05-2021','13-05-2021','69','2');
+insert into EMPRUNT (date_emp, date_retour, id_ex, id_et) VALUES ('06-05-2021','13-05-2021','13','2');
 insert into EMPRUNT (date_emp, date_retour, id_ex, id_et) VALUES ('31-05-2021','15-06-2021','2','1');
 insert into EMPRUNT (date_emp, date_retour, id_ex, id_et) VALUES ('31-05-2021','15-06-2021','6','1');
 

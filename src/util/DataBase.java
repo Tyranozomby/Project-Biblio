@@ -120,7 +120,7 @@ public class DataBase {
         try {
             stmt.executeQuery("DELETE from RESERVATION WHERE ID_ET = " + id);
             stmt.executeQuery("DELETE from EMPRUNT WHERE ID_ET = " + id);
-            stmt.executeQuery("DELETE from ETUDIANT WHERE ID_ET = " + id);
+            stmt.executeQuery("DELETE from ETUDIANT WHERE ID_ET= " + id);
 
         } catch (SQLException e) {
             System.out.println("Erreur lors de la Suppression");
@@ -161,7 +161,6 @@ public class DataBase {
     public void supprBook(String author, String title) {
         try {
             int id = 0;
-
             try {
                 ResultSet rSet = stmt.executeQuery("SELECT ID_LIV FROM LIVRE WHERE auteur = '" + author + "' AND titre='" + title + "'");
                 while (rSet.next()) {
@@ -173,7 +172,8 @@ public class DataBase {
             }
 
             if (id != 0) {
-                System.out.println("Livre bien supprimé");
+                stmt.executeQuery("DELETE from RESERVATION WHERE ID_LIV = " + id);
+                stmt.executeQuery("DELETE from EXEMPLAIRE WHERE ID_LIV = " + id);
                 stmt.executeQuery("DELETE from LIVRE WHERE ID_LIV = " + id);
             }
 

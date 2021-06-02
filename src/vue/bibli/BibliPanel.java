@@ -28,7 +28,8 @@ public class BibliPanel extends JPanel {
     private final JTextField infoMdp = new JTextField();
     private final JComboBox<Etudiant> infoComboBox = new JComboBox<>();
 
-    private final JButton infoChoisir = new JButton("Choisir");
+    private final JLabel labelID = new JLabel("ID", JLabel.CENTER);
+
     private final JButton infoSauvegarder = new JButton("Sauvegarder");
     private final JButton infoSupprimer = new JButton("Supprimer");
 
@@ -220,19 +221,15 @@ public class BibliPanel extends JPanel {
         panel.add(infoComboBox, c);
 
         c.gridx = 1;
-        c.anchor = GridBagConstraints.CENTER;
-        infoChoisir.setFont(Constantes.FIELD_FONT);
-        infoChoisir.setBorder(Constantes.BORDER);
-        infoChoisir.setFocusPainted(false);
-        panel.add(infoChoisir, c);
-
-        // LABELS
-        c.gridx = 0;
-        c.gridy = 1;
         c.anchor = GridBagConstraints.WEST;
         c.fill = GridBagConstraints.NONE;
         c.ipadx = 50;
         c.ipady = 10;
+        panel.add(labelID, c);
+
+        // LABELS
+        c.gridx = 0;
+        c.gridy = 1;
         JLabel labelNom = new JLabel("Nom de l'étudiant :");
         labelNom.setLabelFor(infoNom);
         labelNom.setDisplayedMnemonic('n');
@@ -469,7 +466,7 @@ public class BibliPanel extends JPanel {
     // INFO ÉTUDIANTS
     public int getJComboBoxID() {
         Etudiant etu = (Etudiant) infoComboBox.getSelectedItem();
-        assert etu != null;
+        if(etu == null) return -1;
         return etu.getId();
     }
 
@@ -500,6 +497,11 @@ public class BibliPanel extends JPanel {
             infoComboBox.addItem(etu);
         }
         modeleEmpAll.setListeEmp(DB.getEmprunts());
+        infoComboBox.setSelectedIndex(0);
+    }
+
+    public void setlabelID(String ID){
+        labelID.setText("ID :        " + ID);
     }
 
     // RÉSERVATIONS
@@ -552,6 +554,8 @@ public class BibliPanel extends JPanel {
 
         //TODO Remplir avec les objets nécessitant un actionListener. Ne pas oublier setActionCommand("mot-clé")
     }
+
+
 
 }
 

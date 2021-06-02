@@ -55,7 +55,7 @@ public class TableModeleEmpAll implements TableModel {
         } else if (columnIndex == 3) {
             try {
                 if (new Date().after(new SimpleDateFormat("dd MMM yyyy").parse(emp.getFin()))) {
-                    return emp.getFin() + " ⚠";
+                    return emp.getFin() + " /!\\";
                 } else {
                     return emp.getFin();
                 }
