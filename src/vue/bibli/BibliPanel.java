@@ -13,37 +13,36 @@ public class BibliPanel extends JPanel {
 
     private final JLabel title = new JLabel();
 
-    private final JButton searchButton = new JButton("Rechercher");
-    private final JButton reserveButton = new JButton("Réserver");
-    private final JButton cancelResButton = new JButton("Annuler la réservation");
-    private final JButton ajoutLivre = new JButton("Ajouter un livre");
-    private final JButton suprLivre = new JButton("Supprimer un livre");
+    // Gestion Livres
+    private final JTextField livreTitre = new JTextField();
+    private final JTextField livreAuteur = new JTextField();
 
-    private final JButton infoChoisir = new JButton("Choisir");
-    private final JButton infoSauvegarder = new JButton("Sauvegarder");
-    private final JButton infoSupprimer = new JButton("Supprimer");
-    private final JButton infoNouveau = new JButton("Nouveau");
+    private final JButton livreSearch = new JButton("Rechercher");
+    private final JButton livreAjouter = new JButton("Ajouter un livre");
+    private final JButton livreSuppr = new JButton("Supprimer un livre");
 
+    // Info Étudiants
     private final JTextField infoEmail = new JTextField();
     private final JTextField infoNom = new JTextField();
     private final JTextField infoPrenom = new JTextField();
     private final JTextField infoMdp = new JTextField();
+    private final JComboBox<Etudiant> infoComboBox = new JComboBox<>();
 
-    //Retour Livres
+    private final JButton infoChoisir = new JButton("Choisir");
+    private final JButton infoSauvegarder = new JButton("Sauvegarder");
+    private final JButton infoSupprimer = new JButton("Supprimer");
+
+    // Retour Emprunts
     private final JTextField retourNom = new JTextField();
     private final JTextField retourPrenom = new JTextField();
     private final JTextField retourTitre = new JTextField();
     private final JTextField retourAuteur = new JTextField();
+
     private final JButton retourRecherche = new JButton("Rechercher");
     private final JButton retourRendu = new JButton("Livre bien rendu");
     private final JButton retourRelance = new JButton("Relancer l'élève");
 
-    private final JComboBox<Etudiant> infoComboBox = new JComboBox<>();
-
-    private final JTextField titreField = new JTextField();
-    private final JTextField auteurField = new JTextField();
-    private final JTextField idEtudiantField = new JTextField();
-
+    // Tables et Modèles
     private final TableModeleLiv modeleLiv = new TableModeleLiv();
     private final TableModeleRes modeleRes = new TableModeleRes();
     private final TableModeleEmpAll modeleEmpAll = new TableModeleEmpAll();
@@ -75,10 +74,10 @@ public class BibliPanel extends JPanel {
         //Ajout onglets
 
         JTabbedPane onglets = new JTabbedPane();
-        onglets.add("Info Étudiant", infoEtudiant(c));
-        onglets.add("Emprunt", supprRes(c)); //Pouvoir voir les exemplaires, les livres non rendus/rendu /Valider les emprunts
-        onglets.add("Réserver et ajouter un livre", resEtudiant(c));
-        onglets.add("Retours livres", retourLivres(c));
+        onglets.add("Gestion Étudiant", infoEtudiant());
+        onglets.add("Nouvel emprunt", nouvelEmprunt()); //Pouvoir voir les exemplaires, les livres non rendus/rendu /Valider les emprunts
+        onglets.add("Gérer livres", gererLivres());
+        onglets.add("Retours emprunts", retourLivres());
         onglets.setFocusable(false);
 
         content.add(onglets, BorderLayout.CENTER);
@@ -109,12 +108,13 @@ public class BibliPanel extends JPanel {
     /**
      * Method used to get panel for books' return and remind late students
      *
-     * @param c GridBagConstraints object to use for the panel
      * @return a JPanel
      */
-    private JPanel retourLivres(GridBagConstraints c) {
+    private JPanel retourLivres() {
         JPanel panel = new JPanel(new GridBagLayout());
         panel.setOpaque(false);
+
+        GridBagConstraints c = new GridBagConstraints();
 
         // TABLEAU
         c.gridy = 1;
@@ -125,6 +125,7 @@ public class BibliPanel extends JPanel {
         tableEmpAll.getColumnModel().getColumn(1).setPreferredWidth(250);  // Column size
         tableEmpAll.getColumnModel().getColumn(2).setPreferredWidth(150);  //
         tableEmpAll.getColumnModel().getColumn(3).setPreferredWidth(100);  //
+        tableEmpAll.setRowHeight(15);
 
         JScrollPane scrollPane = new JScrollPane(tableEmpAll);
         scrollPane.setPreferredSize(new Dimension(800, 218));
@@ -197,9 +198,11 @@ public class BibliPanel extends JPanel {
         return panel;
     }
 
-    private JPanel infoEtudiant(GridBagConstraints c) {
+    private JPanel infoEtudiant() {
         JPanel panel = new JPanel(new GridBagLayout());
         panel.setOpaque(false);
+
+        GridBagConstraints c = new GridBagConstraints();
 
         c.insets = new Insets(8, 8, 8, 8);
 
@@ -207,6 +210,7 @@ public class BibliPanel extends JPanel {
 
         c.gridx = 0;
         c.gridy = 0;
+        c.gridwidth = 1;
         c.anchor = GridBagConstraints.WEST;
         c.fill = GridBagConstraints.HORIZONTAL;
         c.ipadx = 100;
@@ -282,20 +286,10 @@ public class BibliPanel extends JPanel {
         JPanel boutons = new JPanel(new GridLayout(2, 2, 10, 10));
         boutons.setOpaque(false);
 
-        infoSauvegarder.setFont(Constantes.FIELD_FONT);
-        infoNouveau.setFont(Constantes.FIELD_FONT);
-        infoSupprimer.setFont(Constantes.FIELD_FONT);
-
-        infoSauvegarder.setBorder(Constantes.BORDER);
-        infoNouveau.setBorder(Constantes.BORDER);
-        infoSupprimer.setBorder(Constantes.BORDER);
-
         infoSauvegarder.setFocusPainted(false);
-        infoNouveau.setFocusPainted(false);
         infoSupprimer.setFocusPainted(false);
 
         boutons.add(infoSauvegarder, c);
-        boutons.add(infoNouveau, c);
         boutons.add(infoSupprimer, c);
 
         c.gridx = 0;
@@ -307,74 +301,51 @@ public class BibliPanel extends JPanel {
         return panel;
     }
 
-    private JPanel resEtudiant(GridBagConstraints c) {
+    private JPanel gererLivres() {
         //Onglet nouvelles réservations
-
-        JPanel newRes = new JPanel();
+        JPanel newRes = new JPanel(new GridBagLayout());
         newRes.setOpaque(false);
-        newRes.setLayout(new GridBagLayout());
-        c.insets = new Insets(10, 10,10, 10);
 
-        //
+        GridBagConstraints c = new GridBagConstraints();
+
+        c.insets = new Insets(10, 10, 10, 10);
+
+
         c.gridx = 1;
         c.gridy = 0;
         c.anchor = GridBagConstraints.CENTER;
         c.fill = GridBagConstraints.HORIZONTAL;
         c.ipadx = 100;
         c.ipady = 7;
-        idEtudiantField.setFont(Constantes.FIELD_FONT);
-        idEtudiantField.setBorder(Constantes.BORDER);
-        newRes.add(idEtudiantField, c);
-        //
+        livreTitre.setFont(Constantes.FIELD_FONT);
+        livreTitre.setBorder(Constantes.BORDER);
+        newRes.add(livreTitre, c);
 
         c.gridx = 1;
         c.gridy = 1;
-        c.anchor = GridBagConstraints.CENTER;
-        c.fill = GridBagConstraints.HORIZONTAL;
-        c.ipadx = 100;
-        c.ipady = 7;
-        titreField.setFont(Constantes.FIELD_FONT);
-        titreField.setBorder(Constantes.BORDER);
-        newRes.add(titreField, c);
+        livreAuteur.setFont(Constantes.FIELD_FONT);
+        livreAuteur.setBorder(Constantes.BORDER);
+        newRes.add(livreAuteur, c);
 
-        c.gridx = 1;
-        c.gridy = 2;
-        auteurField.setFont(Constantes.FIELD_FONT);
-        auteurField.setBorder(Constantes.BORDER);
-        newRes.add(auteurField, c);
-
-        //
         c.gridx = 0;
         c.gridy = 0;
-        c.anchor = GridBagConstraints.WEST;
-        c.fill = GridBagConstraints.NONE;
-        c.ipadx = 50;
-        c.ipady = 10;
-        JLabel labelIDEtudiant = new JLabel("ID Etudiant :");
-        labelIDEtudiant.setLabelFor(titreField);
-        labelIDEtudiant.setDisplayedMnemonic('t');
-        newRes.add(labelIDEtudiant, c);
-        //
-
-        c.gridx = 0;
-        c.gridy = 1;
         c.anchor = GridBagConstraints.WEST;
         c.fill = GridBagConstraints.NONE;
         c.ipadx = 50;
         c.ipady = 10;
         JLabel labelTitre = new JLabel("Titre :");
-        labelTitre.setLabelFor(titreField);
+        labelTitre.setLabelFor(livreTitre);
         labelTitre.setDisplayedMnemonic('t');
         newRes.add(labelTitre, c);
 
         c.gridx = 0;
-        c.gridy = 2;
+        c.gridy = 1;
         c.anchor = GridBagConstraints.WEST;
         c.fill = GridBagConstraints.NONE;
         c.ipadx = 50;
         c.ipady = 10;
         JLabel labelAuteur = new JLabel("Auteur :");
-        labelAuteur.setLabelFor(auteurField);
+        labelAuteur.setLabelFor(livreAuteur);
         labelAuteur.setDisplayedMnemonic('a');
         newRes.add(labelAuteur, c);
 
@@ -383,16 +354,16 @@ public class BibliPanel extends JPanel {
         panelBoutons.setOpaque(false);
         panelBoutons.setLayout(new GridLayout(1, 2, 20, 2));
 
-        searchButton.setFocusPainted(false);
-        reserveButton.setFocusPainted(false);
+        livreSearch.setFocusPainted(false);
+        livreAjouter.setFocusPainted(false);
+        livreSuppr.setFocusPainted(false);
 
-        panelBoutons.add(searchButton);
-        panelBoutons.add(reserveButton);
-        panelBoutons.add(ajoutLivre);
-        panelBoutons.add(suprLivre);
+        panelBoutons.add(livreSearch);
+        panelBoutons.add(livreAjouter);
+        panelBoutons.add(livreSuppr);
 
         c.gridx = 0;
-        c.gridy = 3;
+        c.gridy = 2;
         c.gridwidth = 2;
         c.anchor = GridBagConstraints.CENTER;
         c.fill = GridBagConstraints.HORIZONTAL;
@@ -410,12 +381,16 @@ public class BibliPanel extends JPanel {
 
         c.gridx = 0;
         c.gridy = 5;
-        c.gridwidth = 2;
+        c.gridwidth = 3;
+        c.anchor = GridBagConstraints.CENTER;
+        c.fill = GridBagConstraints.HORIZONTAL;
         c.insets = new Insets(0, 0, 0, 0);
 
         tableLiv.setFocusable(false);
+        tableLiv.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         tableLiv.getColumnModel().getColumn(0).setPreferredWidth(Constantes.AUTEUR_SIZE);  // Column size
         tableLiv.getColumnModel().getColumn(1).setPreferredWidth(Constantes.TITRE_SIZE);   //
+        tableLiv.setRowHeight(15);
 
         JScrollPane scrollPane = new JScrollPane(tableLiv);
         scrollPane.setPreferredSize(new Dimension(400, 218));
@@ -426,8 +401,13 @@ public class BibliPanel extends JPanel {
         return newRes;
     }
 
-    public JPanel supprRes(GridBagConstraints c) {
-        return new JPanel();
+    public JPanel nouvelEmprunt() {
+        JPanel panel = new JPanel(new GridBagLayout());
+        panel.setOpaque(false);
+
+        GridBagConstraints c = new GridBagConstraints();
+
+        return panel;
     }
 
 
@@ -512,17 +492,31 @@ public class BibliPanel extends JPanel {
         }
     }
 
+    public void updateJCombobox(DataBase DB) {
+        infoComboBox.removeAllItems();
+        infoComboBox.addItem(new Etudiant(0, "Étudiant", "Créer", "", ""));
+
+        for (Etudiant etu : DB.setTabStudent()) {
+            infoComboBox.addItem(etu);
+        }
+        modeleEmpAll.setListeEmp(DB.getEmprunts());
+    }
+
     // RÉSERVATIONS
     public String getTitre() {
-        return titreField.getText();
+        return livreTitre.getText();
     }
 
     public String getAuteur() {
-        return auteurField.getText();
+        return livreAuteur.getText();
     }
 
-    public int getID(){
-        return Integer.parseInt(idEtudiantField.getText());
+    public Livre getSelectedBook() {
+        int row = tableLiv.getSelectedRow();
+        if (row == -1) { // No book selected
+            return null;
+        }
+        return modeleLiv.getValueAt(row);
     }
 
 
@@ -541,44 +535,23 @@ public class BibliPanel extends JPanel {
         retourRelance.addActionListener(controller);
 
         // INFO ÉTUDIANTS
-        infoChoisir.setActionCommand("InfoEtu-Choisir");
-        infoChoisir.addActionListener(controller);
+        infoComboBox.setActionCommand("InfoEtu-Choisir");
+        infoComboBox.addActionListener(controller);
         infoSauvegarder.setActionCommand("InfoEtu-Sauvegarder");
         infoSauvegarder.addActionListener(controller);
-        infoNouveau.setActionCommand("InfoEtu-Nouveau");
-        infoNouveau.addActionListener(controller);
         infoSupprimer.setActionCommand("InfoEtu-Supprimer");
         infoSupprimer.addActionListener(controller);
 
         // resEtudiant
-        searchButton.setActionCommand("resEtudiant-search");
-        searchButton.addActionListener(controller);
-        reserveButton.setActionCommand("resEtudiant-reserver");
-        reserveButton.addActionListener(controller);
-        ajoutLivre.setActionCommand("resEtudiant-ajout");
-        ajoutLivre.addActionListener(controller);
-        suprLivre.setActionCommand("resEtudiant-suppression");
-        suprLivre.addActionListener(controller);
+        livreSearch.setActionCommand("resEtudiant-search");
+        livreSearch.addActionListener(controller);
+        livreAjouter.setActionCommand("resEtudiant-ajout");
+        livreAjouter.addActionListener(controller);
+        livreSuppr.setActionCommand("resEtudiant-suppression");
+        livreSuppr.addActionListener(controller);
 
         //TODO Remplir avec les objets nécessitant un actionListener. Ne pas oublier setActionCommand("mot-clé")
     }
 
-    public void updateJCombobox(DataBase DB ){
-        infoComboBox.removeAllItems();
-        infoComboBox.addItem(new Etudiant(0, "Étudiant", "Créer", "", ""));
-
-        for (Etudiant etu : DB.setTabStudent()) {
-            infoComboBox.addItem(etu);
-        }
-        modeleEmpAll.setListeEmp(DB.getEmprunts());
-    }
-
-    public Livre getSelectedBook() {
-        int row = tableLiv.getSelectedRow();
-        if (row == -1) { // No book selected
-            return null;
-        }
-        return modeleLiv.getValueAt(row);
-    }
 }
 

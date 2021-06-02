@@ -1,13 +1,10 @@
 package control;
 
-import constantes.Constantes;
 import modele.Emprunt;
 import modele.Etudiant;
-import modele.Livre;
 import util.DataBase;
 import vue.bibli.BibliPanel;
 
-import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -72,8 +69,8 @@ public class BibliController implements ActionListener {
                 } else {
                     bibliPanel.setZoneFill(null);
                 }
-                bibliPanel.updateJCombobox(DB);
                 break;
+
             case "InfoEtu-Sauvegarder":
                 id = bibliPanel.getJComboBoxID();
                 if (id > 0) {
@@ -92,43 +89,27 @@ public class BibliController implements ActionListener {
                 break;
 
             case "InfoEtu-Supprimer":
-
-            id = bibliPanel.getJComboBoxID();
-            System.out.println(id);
-            DB.deleteStudent(id);
-            System.out.println("InfoEtu-Supprimer");
-            bibliPanel.updateJCombobox(DB);
-            break;
-
+                id = bibliPanel.getJComboBoxID();
+                System.out.println(id);
+                DB.deleteStudent(id);
+                System.out.println("InfoEtu-Supprimer");
+                bibliPanel.updateJCombobox(DB);
+                break;
+                //
             case "resEtudiant-search":
                 bibliPanel.setBookList(DB.researchCorresponding(bibliPanel.getAuteur(), bibliPanel.getTitre()));
-
                 System.out.println("resEtudiant-search");
                 break;
-            case "resEtudiant-reserver":
-                Etudiant stu = DB.getStudent(bibliPanel.getID());
-                Livre book = bibliPanel.getSelectedBook();
-                if (book != null) {
-                    if (DB.getNumberRes(stu) < Constantes.MAX_RES) {
-                        if (DB.canReserveBook(stu, book)) {
-                            DB.addReservation(book, stu);
-                        }
-                    }
-                }
-                System.out.println("resEtudiant-reserver");
-                break;
+
             case "resEtudiant-ajout":
                 DB.createBook(bibliPanel.getAuteur(), bibliPanel.getTitre());
                 System.out.println("resEtudiant-ajout");
                 break;
 
             case "resEtudiant-suppression":
-                DB.suprBook(bibliPanel.getAuteur(), bibliPanel.getTitre());
+                DB.supprBook(bibliPanel.getAuteur(), bibliPanel.getTitre());
                 System.out.println("resEtudiant-Supr");
                 break;
-
-
-
         }
     }
 
