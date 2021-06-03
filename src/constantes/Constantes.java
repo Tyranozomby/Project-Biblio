@@ -34,7 +34,7 @@ public interface Constantes {
     int MDP_INV = 5;
 
     int MAX_RES = 5;
-    int MAX_BOOK = 5;
+    int MAX_EMP = 5;
     int LENGTH_RES = 15;
 
 }

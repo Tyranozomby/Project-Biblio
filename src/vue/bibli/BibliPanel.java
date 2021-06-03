@@ -53,11 +53,9 @@ public class BibliPanel extends JPanel {
     private final JButton retourRelance = new JButton("Relancer l'élève");
 
     // Nouvel Emprunt
-    private final JTextField empNom = new JTextField();
-    private final JTextField empPrenom = new JTextField();
-    private final JTextField empTitre = new JTextField();
-    private final JTextField empAuteur = new JTextField();
-
+    private final JComboBox<Livre> empComboLivres = new JComboBox<>();
+    private final JComboBox<Etudiant> empComboEtu = new JComboBox<>();
+    private final JLabel empInfoTxt = new JLabel("", JLabel.CENTER);
     private final JButton empAjout = new JButton("Ajouter");
 
     // Tables et Modèles
@@ -124,6 +122,41 @@ public class BibliPanel extends JPanel {
         panel.setOpaque(false);
 
         GridBagConstraints c = new GridBagConstraints();
+
+        c.insets = new Insets(8, 8, 100, 8);
+
+        c.gridy = 0;
+        c.gridwidth = 2;
+        JLabel label = new JLabel("Emprunt Direct", JLabel.CENTER);
+        label.setFont(Constantes.TITLE_FONT);
+        panel.add(label, c);
+
+        c.insets = new Insets(8, 8, 8, 8);
+
+        c.gridy = 1;
+        c.gridwidth = 1;
+        c.ipadx = 100;
+        c.ipady = 7;
+        empComboEtu.setFont(Constantes.FIELD_FONT);
+        empComboEtu.setBackground(Constantes.WHITE);
+        panel.add(empComboEtu, c);
+
+        c.gridx = 1;
+        c.gridy = 1;
+        empComboLivres.setFont(Constantes.FIELD_FONT);
+        empComboLivres.setBackground(Constantes.WHITE);
+        panel.add(empComboLivres, c);
+
+        c.gridx = 0;
+        c.gridy = 2;
+        c.gridwidth = 2;
+        empInfoTxt.setText("Choisissez un étudiant et un livre");
+        panel.add(empInfoTxt, c);
+
+        c.gridy = 3;
+        c.gridwidth = 2;
+        empAjout.setFocusPainted(false);
+        panel.add(empAjout, c);
 
         return panel;
     }
@@ -502,16 +535,8 @@ public class BibliPanel extends JPanel {
 
     public void setDB(DataBase DB) {
         new BibliController(this, DB); // !!! Contrôleur !!!
-        infoComboBox.removeAllItems();
 
-        // Pour créer les nouveaux étudiants
-        infoComboBox.addItem(new Etudiant(0, "Étudiant", "Créer", "", ""));
-
-        for (Etudiant etu : DB.setTabStudent()) {
-            infoComboBox.addItem(etu);
-        }
-        modeleEmpAll.setListeEmp(DB.getEmprunts());
-        modeleResAll.setListeRes(DB.getReservations());
+        updateJCombobox(DB);
         modeleLiv.setListeLivres(DB.researchCorresponding("", ""));
     }
 
@@ -585,12 +610,20 @@ public class BibliPanel extends JPanel {
 
     public void updateJCombobox(DataBase DB) {
         infoComboBox.removeAllItems();
+        empComboEtu.removeAllItems();
+        empComboLivres.removeAllItems();
+
         infoComboBox.addItem(new Etudiant(0, "Étudiant", "Créer", "", ""));
 
         for (Etudiant etu : DB.setTabStudent()) {
             infoComboBox.addItem(etu);
+            empComboEtu.addItem(etu);
+        }
+        for (Livre liv : DB.researchCorresponding("", "")) {
+            empComboLivres.addItem(liv);
         }
         modeleEmpAll.setListeEmp(DB.getEmprunts());
+        modeleResAll.setListeRes(DB.getReservations());
         infoComboBox.setSelectedIndex(0);
     }
 
@@ -644,6 +677,15 @@ public class BibliPanel extends JPanel {
         modeleResAll.setListeRes(res);
     }
 
+    /* EMPRUNT */
+    public Etudiant getEmpEtu() {
+        return (Etudiant) empComboEtu.getSelectedItem();
+    }
+
+    public Livre getEmpLiv() {
+        return (Livre) empComboLivres.getSelectedItem();
+    }
+
 
     public void addListener(BibliController controller) {
         // INFO ÉTUDIANTS
@@ -677,7 +719,8 @@ public class BibliPanel extends JPanel {
         resValider.addActionListener(controller);
 
         // NOUVEL EMPRUNT
-
+        empAjout.setActionCommand("Emprunt-Ajout");
+        empAjout.addActionListener(controller);
 
         // RETOUR EMPRUNT
         retourNom.addKeyListener(controller.enterListener(retourNom, "Retour-Recherche"));

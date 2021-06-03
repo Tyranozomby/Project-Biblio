@@ -301,7 +301,20 @@ public class DataBase {
         }
     }
 
-    //TODO canValideReserve faux si livre déjà emprunté sinon vrai
+    public boolean canValidReservation(Reservation res) {
+        try {
+            ResultSet rSet = stmt.executeQuery("SELECT RESERVATION.ID_LIV FROM RESERVATION, EXEMPLAIRE, EMPRUNT WHERE RESERVATION.ID_LIV = EXEMPLAIRE.ID_LIV and EXEMPLAIRE.ID_EX = EMPRUNT.ID_EX and EMPRUNT.ID_ET = " + res.getEtudiant().getId());
+
+            if (rSet.next()) {
+                return false;
+            }
+            rSet = stmt.executeQuery("SELECT count(*) FROM EMPRUNT WHERE ID_ET = " + res.getEtudiant().getId());
+            return rSet.next() && rSet.getInt(1) < Constantes.MAX_EMP;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 
     public void validerRes(Reservation res, int id) {
         GregorianCalendar cal = new GregorianCalendar();
@@ -337,7 +350,7 @@ public class DataBase {
     /* EMPRUNTS */
 
     public Emprunt[] getEmprunts(Etudiant student) {
-        Emprunt[] listeEmp = new Emprunt[Constantes.MAX_BOOK];
+        Emprunt[] listeEmp = new Emprunt[Constantes.MAX_EMP];
         SimpleDateFormat fmt = new SimpleDateFormat("dd MMM yyyy");
 
         int i = 0;
@@ -351,7 +364,7 @@ public class DataBase {
                 listeEmp[i] = new Emprunt(liv, fin, student, id);
                 i++;
             }
-            for (; i < Constantes.MAX_BOOK; i++) {
+            for (; i < Constantes.MAX_EMP; i++) {
                 listeEmp[i] = new Emprunt();
             }
             return listeEmp;
@@ -415,6 +428,40 @@ public class DataBase {
         }
     }
 
+    public boolean canAddEmprunt(Etudiant etu, Livre liv) {
+        try {
+            ResultSet rSet = stmt.executeQuery("SELECT * FROM RESERVATION WHERE ID_LIV = " + liv.getId());
+            if (rSet.next()) {
+                return false;
+            }
+            rSet = stmt.executeQuery("SELECT * FROM EMPRUNT WHERE ID_EX in (SELECT ID_EX FROM EXEMPLAIRE WHERE ID_LIV = " + liv.getId() + ") and ID_ET = " + etu.getId());
+            if (rSet.next()) {
+                return false;
+            }
+            rSet = stmt.executeQuery("SELECT count(*) FROM EMPRUNT WHERE ID_ET = " + etu.getId());
+            return rSet.next() && rSet.getInt(1) < Constantes.MAX_EMP;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public void addEmprunt(Etudiant etu, int id) {
+        GregorianCalendar cal = new GregorianCalendar();
+        SimpleDateFormat fmt = new SimpleDateFormat("dd MMM yyyy");
+        fmt.setCalendar(cal);
+        String deb = fmt.format(cal.getTime());
+        cal.add(GregorianCalendar.DAY_OF_MONTH, Constantes.LENGTH_RES);
+        String fin = fmt.format(cal.getTime());
+        try {
+            stmt.executeQuery("INSERT INTO EMPRUNT VALUES ('" + deb + "', '" + fin + "', " + id + ", " + etu.getId() + ")");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    // OTHER
     public String newPassword(Etudiant student, String mdp) {
         try {
             stmt.executeQuery("UPDATE ETUDIANT SET MDP = '" + mdp + "' WHERE ID_ET =" + student.getId());

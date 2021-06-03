@@ -36,7 +36,7 @@ public class BibliController implements ActionListener {
         Reservation res;
         Etudiant etu;
         Emprunt emp;
-        Livre book;
+        Livre liv;
         int id;
         switch (e.getActionCommand()) {
             // RETOUR
@@ -108,9 +108,9 @@ public class BibliController implements ActionListener {
                 bibliPanel.setBookList(DB.researchCorresponding("", ""));
                 break;
             case "Livre-Suppression":
-                book = bibliPanel.getSelectedBook();
-                if (book != null) {
-                    DB.supprBook(book);
+                liv = bibliPanel.getSelectedBook();
+                if (liv != null) {
+                    DB.supprBook(liv);
                 }
                 bibliPanel.setBookList(DB.researchCorresponding(bibliPanel.getLivTitre(), bibliPanel.getLivAuteur()));
                 break;
@@ -122,11 +122,25 @@ public class BibliController implements ActionListener {
             case "Res-Valider":
                 res = bibliPanel.getSelectedRes();
                 if (res != null) {
-                    id = DB.exemplaireLibrePour(res.getLivre());
+                    if (DB.canValidReservation(res)) {
+                        id = DB.exemplaireLibrePour(res.getLivre());
+                        if (id != 0) {
+                            DB.validerRes(res, id);
+                            bibliPanel.updateJCombobox(DB);
+                        }
+                    }
+                }
+                break;
+
+            // EMPRUNT
+            case "Emprunt-Ajout":
+                etu = bibliPanel.getEmpEtu();
+                liv = bibliPanel.getEmpLiv();
+                if (DB.canAddEmprunt(etu, liv)) {
+                    id = DB.exemplaireLibrePour(liv);
                     if (id != 0) {
-                        DB.validerRes(res, id);
-                        bibliPanel.setResAllList(DB.getReservations(bibliPanel.getResNom(), bibliPanel.getResPrenom(), bibliPanel.getResTitre(), bibliPanel.getResAuteur()));
-                        bibliPanel.setEmpAllList(DB.getEmprunts(bibliPanel.getRetourNom(), bibliPanel.getRetourPrenom(), bibliPanel.getRetourTitre(), bibliPanel.getRetourAuteur()));
+                        DB.addEmprunt(etu, id);
+                        bibliPanel.updateJCombobox(DB);
                     }
                 }
                 break;

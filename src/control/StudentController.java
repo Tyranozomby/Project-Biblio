@@ -25,7 +25,7 @@ public class StudentController implements ActionListener {
         this.panelPrincipal = studentPanel;
         this.DB = DB;
 
-        panelPrincipal.setBookList(DB.researchCorresponding(panelPrincipal.getAuteur(), panelPrincipal.getTitre()));
+        panelPrincipal.setBookList(DB.researchCorresponding(panelPrincipal.getTitre(), panelPrincipal.getAuteur()));
 
         this.panelPrincipal.addListener(this);
     }
@@ -37,7 +37,7 @@ public class StudentController implements ActionListener {
         Reservation res = panelPrincipal.getSelectedRes();
         switch (e.getActionCommand()) {
             case "Rechercher":
-                panelPrincipal.setBookList(DB.researchCorresponding(panelPrincipal.getAuteur(), panelPrincipal.getTitre()));
+                panelPrincipal.setBookList(DB.researchCorresponding(panelPrincipal.getTitre(), panelPrincipal.getAuteur()));
                 panelPrincipal.setInfoMessageLiv(Constantes.BASIC_MESSAGE);
                 break;
             case "Réserver":

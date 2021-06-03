@@ -169,6 +169,15 @@ BEGIN
 end ;
 /
 
+CREATE or REPLACE TRIGGER clear_late_res
+    AFTER INSERT
+    on RESERVATION
+
+BEGIN
+    DELETE FROM RESERVATION WHERE DATE_FIN_RES < SYSDATE;
+end;
+/
+
 insert into EMPRUNT (date_emp, date_retour, id_ex, id_et) VALUES ('06-05-2021','13-05-2021','42','2');
 insert into EMPRUNT (date_emp, date_retour, id_ex, id_et) VALUES ('06-05-2021','13-05-2021','69','2');
 insert into EMPRUNT (date_emp, date_retour, id_ex, id_et) VALUES ('06-05-2021','13-05-2021','13','2');

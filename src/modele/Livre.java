@@ -19,7 +19,7 @@ public class Livre {
     }
 
     public String toString() {
-        return "Id : " + id + " | Auteur : " + auteur + " | Titre : " + titre;
+        return titre + " → " + auteur;
     }
 
     public int getId() {
