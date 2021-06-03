@@ -5,7 +5,7 @@ import modele.Etudiant;
 import modele.Livre;
 import modele.Reservation;
 import util.DataBase;
-import vue.bibli.BibliPanel;
+import vue.bibli.*;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -19,16 +19,30 @@ import java.awt.event.KeyEvent;
  */
 public class BibliController implements ActionListener {
 
-    private final BibliPanel bibliPanel;
-    public final DataBase DB;
+    private final OngletGestionEtudiants gestionEtudiants;
+    private final OngletGestionLivres gestionLivres;
+    private final OngletValiderRes validerRes;
+    private final OngletEmpruntDirect empruntDirect;
+    private final OngletRetourEmprunt retourEmprunt;
+    private final DataBase DB;
 
 
-    public BibliController(BibliPanel bibliPanel, DataBase DB) {
+    public BibliController(OngletGestionEtudiants gestionEtudiants, OngletGestionLivres gestionLivres, OngletValiderRes validerRes, OngletEmpruntDirect empruntDirect, OngletRetourEmprunt retourEmprunt, DataBase DB) {
 
-        this.bibliPanel = bibliPanel;
+        this.gestionEtudiants = gestionEtudiants;
+        this.gestionLivres = gestionLivres;
+        this.validerRes = validerRes;
+        this.empruntDirect = empruntDirect;
+        this.retourEmprunt = retourEmprunt;
         this.DB = DB;
 
-        this.bibliPanel.addListener(this);
+        this.gestionEtudiants.addListener(this);
+        this.gestionLivres.addListener(this);
+        this.validerRes.addListener(this);
+        this.empruntDirect.addListener(this);
+        this.retourEmprunt.addListener(this);
+
+        updateAll(DB);
     }
 
     @Override
@@ -39,108 +53,107 @@ public class BibliController implements ActionListener {
         Livre liv;
         int id;
         switch (e.getActionCommand()) {
-            // RETOUR
-            case "Retour-Recherche":
-                bibliPanel.setEmpAllList(DB.getEmprunts(bibliPanel.getRetourNom(), bibliPanel.getRetourPrenom(), bibliPanel.getRetourTitre(), bibliPanel.getRetourAuteur()));
-                break;
-            case "Retour-Rendu":
-                emp = bibliPanel.getRetourSelectedEmp();
-                if (emp != null) {
-                    DB.retourEmprunt(emp);
-                    bibliPanel.setEmpAllList(DB.getEmprunts(bibliPanel.getRetourNom(), bibliPanel.getRetourPrenom(), bibliPanel.getRetourTitre(), bibliPanel.getRetourAuteur()));
-                }
-                break;
-            case "Retour-Relance":
-                emp = bibliPanel.getRetourSelectedEmp();
-                if (emp != null) {
-                    etu = emp.getEtudiant();
-                    if (etu.getId() != 0) {
-                        bibliPanel.sendMailRelance(etu);
-                    }
-                }
-                break;
 
-            // INFO ÉTUDIANTS
+            // GESTION ÉTUDIANTS
             case "InfoEtu-Choisir":
-                id = bibliPanel.getJComboBoxID();
+                id = gestionEtudiants.getStudentID();
 
                 if (id > 0) {
                     etu = DB.getStudent(id);
-                    bibliPanel.setZoneFill(etu);
-                    bibliPanel.setlabelID(Integer.toString(id));
+                    gestionEtudiants.setZoneFill(etu);
+                    gestionEtudiants.setLabelID(Integer.toString(id));
                 } else {
-                    bibliPanel.setZoneFill(null);
-                    bibliPanel.setlabelID("Aucun");
+                    gestionEtudiants.setZoneFill(null);
+                    gestionEtudiants.setLabelID("Aucun");
                 }
                 break;
-
             case "InfoEtu-Sauvegarder":
-                id = bibliPanel.getJComboBoxID();
-                etu = bibliPanel.getInfoEtudiant(id);
+                id = gestionEtudiants.getStudentID();
+                etu = gestionEtudiants.getInfoEtudiant(id);
                 if (etu.getNom().equals("") || etu.getPrenom().equals("") || etu.getEmail().equals("") || etu.getMdp().equals("")) {
                     break;
                 }
                 if (id > 0) {
-                    DB.setStudent(bibliPanel.getInfoEtudiant(id));
+                    DB.setStudent(gestionEtudiants.getInfoEtudiant(id));
                 } else if (id == 0) {
                     DB.createStudent(etu);
                 }
-                bibliPanel.updateJCombobox(DB);
+                updateAll(DB);
                 break;
-
             case "InfoEtu-Supprimer":
-                id = bibliPanel.getJComboBoxID();
+                id = gestionEtudiants.getStudentID();
                 if (id != 0) {
                     DB.deleteStudent(id);
-                    bibliPanel.updateJCombobox(DB);
+                    updateAll(DB);
                 }
                 break;
 
-            // GESTION LIVRE
+            // GESTION LIVRES
             case "Livre-Search":
-                bibliPanel.setBookList(DB.researchCorresponding(bibliPanel.getLivTitre(), bibliPanel.getLivAuteur()));
+                gestionLivres.setBookList(DB.researchCorresponding(gestionLivres.getLivTitre(), gestionLivres.getLivAuteur()));
                 break;
             case "Livre-Ajout":
-                if (!DB.canAddBook(bibliPanel.getLivTitre(), bibliPanel.getLivAuteur())) {
+                if (!DB.canAddBook(gestionLivres.getLivTitre(), gestionLivres.getLivAuteur())) {
                     break;
                 }
-                DB.createBook(bibliPanel.getLivTitre(), bibliPanel.getLivAuteur());
-                bibliPanel.setBookList(DB.researchCorresponding("", ""));
+                DB.createBook(gestionLivres.getLivTitre(), gestionLivres.getLivAuteur());
+                gestionLivres.setBookList(DB.researchCorresponding("", ""));
                 break;
             case "Livre-Suppression":
-                liv = bibliPanel.getSelectedBook();
+                liv = gestionLivres.getSelectedBook();
                 if (liv != null) {
                     DB.supprBook(liv);
                 }
-                bibliPanel.setBookList(DB.researchCorresponding(bibliPanel.getLivTitre(), bibliPanel.getLivAuteur()));
+                gestionLivres.setBookList(DB.researchCorresponding(gestionLivres.getLivTitre(), gestionLivres.getLivAuteur()));
                 break;
 
-            // VALIDER RES
+            // VALIDER RÉSERVATION
             case "Res-Recherche":
-                bibliPanel.setResAllList(DB.getReservations(bibliPanel.getResNom(), bibliPanel.getResPrenom(), bibliPanel.getResTitre(), bibliPanel.getResAuteur()));
+                validerRes.setResAllList(DB.getReservations(validerRes.getResNom(), validerRes.getResPrenom(), validerRes.getResTitre(), validerRes.getResAuteur()));
                 break;
             case "Res-Valider":
-                res = bibliPanel.getSelectedRes();
+                res = validerRes.getSelectedRes();
                 if (res != null) {
                     if (DB.canValidReservation(res)) {
                         id = DB.exemplaireLibrePour(res.getLivre());
                         if (id != 0) {
                             DB.validerRes(res, id);
-                            bibliPanel.updateJCombobox(DB);
+                            updateAll(DB);
                         }
                     }
                 }
                 break;
 
-            // EMPRUNT
+            // EMPRUNT DIRECT
             case "Emprunt-Ajout":
-                etu = bibliPanel.getEmpEtu();
-                liv = bibliPanel.getEmpLiv();
+                etu = empruntDirect.getEmpEtu();
+                liv = empruntDirect.getEmpLiv();
                 if (DB.canAddEmprunt(etu, liv)) {
                     id = DB.exemplaireLibrePour(liv);
                     if (id != 0) {
                         DB.addEmprunt(etu, id);
-                        bibliPanel.updateJCombobox(DB);
+                        updateAll(DB);
+                    }
+                }
+                break;
+
+            // RETOUR EMPRUNT
+            case "Retour-Recherche":
+                retourEmprunt.setEmpAllList(DB.getEmprunts(retourEmprunt.getRetourNom(), retourEmprunt.getRetourPrenom(), retourEmprunt.getRetourTitre(), retourEmprunt.getRetourAuteur(), retourEmprunt.isCheckboxSelected()));
+                break;
+            case "Retour-Rendu":
+                emp = retourEmprunt.getRetourSelectedEmp();
+                if (emp != null) {
+                    DB.retourEmprunt(emp);
+                    retourEmprunt.setEmpAllList(DB.getEmprunts(retourEmprunt.getRetourNom(), retourEmprunt.getRetourPrenom(), retourEmprunt.getRetourTitre(), retourEmprunt.getRetourAuteur(), retourEmprunt.isCheckboxSelected()));
+                }
+                break;
+            case "Retour-Relance":
+                emp = retourEmprunt.getRetourSelectedEmp();
+                if (emp != null) {
+                    etu = emp.getEtudiant();
+                    if (etu.getId() != 0) {
+                        retourEmprunt.sendMailRelance(etu);
                     }
                 }
                 break;
@@ -156,5 +169,25 @@ public class BibliController implements ActionListener {
                 }
             }
         };
+    }
+
+    public void updateAll(DataBase DB) {
+        gestionEtudiants.getComboBox().removeAllItems();
+        empruntDirect.getComboEtu().removeAllItems();
+        empruntDirect.getComboLivres().removeAllItems();
+
+        gestionEtudiants.getComboBox().addItem(new Etudiant(0, "Étudiant", "Créer", "", ""));
+
+        for (Etudiant etu : DB.setTabStudent()) {
+            gestionEtudiants.getComboBox().addItem(etu);
+            empruntDirect.getComboEtu().addItem(etu);
+        }
+        for (Livre liv : DB.researchCorresponding("", "")) {
+            empruntDirect.getComboLivres().addItem(liv);
+        }
+        retourEmprunt.getModel().setListeEmp(DB.getEmprunts());
+        validerRes.getModel().setListeRes(DB.getReservations());
+        gestionLivres.getModel().setListeLivres(DB.researchCorresponding("", ""));
+        gestionEtudiants.getComboBox().setSelectedIndex(0);
     }
 }

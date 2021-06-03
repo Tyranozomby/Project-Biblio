@@ -3,10 +3,7 @@ package modele;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableModel;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 
 public class TableModeleResAll implements TableModel {
 
@@ -50,15 +47,7 @@ public class TableModeleResAll implements TableModel {
         } else if (columnIndex == 2) {
             return res.getEtudiant().getNom() + " " + res.getEtudiant().getPrenom();
         } else if (columnIndex == 3) {
-            try {
-                if (new Date().after(new SimpleDateFormat("dd MMM yyyy").parse(res.getFin()))) {
-                    return res.getFin() + " /!\\";
-                } else {
-                    return res.getFin();
-                }
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
+            return res.getFin();
         }
         return null;
     }
