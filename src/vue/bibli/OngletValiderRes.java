@@ -11,16 +11,16 @@ import java.util.ArrayList;
 
 public class OngletValiderRes extends JPanel {
 
-    private final JTextField resNom = new JTextField();
-    private final JTextField resPrenom = new JTextField();
-    private final JTextField resTitre = new JTextField();
-    private final JTextField resAuteur = new JTextField();
+    private final JTextField nom = new JTextField();
+    private final JTextField prenom = new JTextField();
+    private final JTextField titre = new JTextField();
+    private final JTextField auteur = new JTextField();
 
-    private final JButton resRecherche = new JButton("Rechercher");
-    private final JButton resValider = new JButton("Valider la réservation");
+    private final JButton rechercher = new JButton("Rechercher");
+    private final JButton valider = new JButton("Valider la réservation");
 
-    private final TableModeleResAll modeleResAll = new TableModeleResAll();
-    private final JTable tableResAll = new JTable(modeleResAll);
+    private final TableModeleResAll modele = new TableModeleResAll();
+    private final JTable table = new JTable(modele);
 
     public OngletValiderRes() {
         setLayout(new GridBagLayout());
@@ -31,15 +31,15 @@ public class OngletValiderRes extends JPanel {
 
         c.gridx = 0;
         c.gridy = 1;
-        tableResAll.setFocusable(false);
-        tableResAll.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        tableResAll.setRowHeight(15);
-        tableResAll.getColumnModel().getColumn(0).setPreferredWidth(300);  //
-        tableResAll.getColumnModel().getColumn(1).setPreferredWidth(250);  // Column size
-        tableResAll.getColumnModel().getColumn(2).setPreferredWidth(150);  //
-        tableResAll.getColumnModel().getColumn(3).setPreferredWidth(100);  //
+        table.setFocusable(false);
+        table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        table.setRowHeight(15);
+        table.getColumnModel().getColumn(0).setPreferredWidth(300);  //
+        table.getColumnModel().getColumn(1).setPreferredWidth(250);  // Column size
+        table.getColumnModel().getColumn(2).setPreferredWidth(150);  //
+        table.getColumnModel().getColumn(3).setPreferredWidth(100);  //
 
-        JScrollPane scrollPane = new JScrollPane(tableResAll);
+        JScrollPane scrollPane = new JScrollPane(table);
         scrollPane.setPreferredSize(new Dimension(800, 200));
         scrollPane.getViewport().setBackground(Constantes.WHITE);
         scrollPane.setBorder(Constantes.BORDER);
@@ -53,94 +53,94 @@ public class OngletValiderRes extends JPanel {
         fields.setOpaque(false);
 
         JLabel nomEtu = new JLabel("Nom élève:");
-        nomEtu.setLabelFor(resNom);
+        nomEtu.setLabelFor(nom);
         nomEtu.setDisplayedMnemonic('n');
         fields.add(nomEtu);
 
-        resNom.setFont(Constantes.FIELD_FONT);
-        resNom.setBorder(Constantes.BORDER);
-        fields.add(resNom);
+        nom.setFont(Constantes.FIELD_FONT);
+        nom.setBorder(Constantes.BORDER);
+        fields.add(nom);
 
         JLabel prenomEtu = new JLabel("Prénom élève:");
-        prenomEtu.setLabelFor(resPrenom);
+        prenomEtu.setLabelFor(prenom);
         prenomEtu.setDisplayedMnemonic('p');
         fields.add(prenomEtu);
 
-        resPrenom.setFont(Constantes.FIELD_FONT);
-        resPrenom.setBorder(Constantes.BORDER);
-        fields.add(resPrenom);
+        prenom.setFont(Constantes.FIELD_FONT);
+        prenom.setBorder(Constantes.BORDER);
+        fields.add(prenom);
 
         JLabel titre = new JLabel("Titre:");
-        titre.setLabelFor(resTitre);
+        titre.setLabelFor(this.titre);
         titre.setDisplayedMnemonic('t');
         fields.add(titre);
 
-        resTitre.setFont(Constantes.FIELD_FONT);
-        resTitre.setBorder(Constantes.BORDER);
-        fields.add(resTitre);
+        this.titre.setFont(Constantes.FIELD_FONT);
+        this.titre.setBorder(Constantes.BORDER);
+        fields.add(this.titre);
 
         JLabel auteur = new JLabel("Auteur:");
-        auteur.setLabelFor(resAuteur);
+        auteur.setLabelFor(this.auteur);
         auteur.setDisplayedMnemonic('a');
         fields.add(auteur);
 
-        resAuteur.setFont(Constantes.FIELD_FONT);
-        resAuteur.setBorder(Constantes.BORDER);
-        fields.add(resAuteur);
+        this.auteur.setFont(Constantes.FIELD_FONT);
+        this.auteur.setBorder(Constantes.BORDER);
+        fields.add(this.auteur);
         add(fields, c);
 
         c.gridy = 2;
         JPanel buttons = new JPanel(new GridLayout(1, 3, 10, 10));
         buttons.setOpaque(false);
-        resRecherche.setFocusPainted(false);    //
-        resValider.setFocusPainted(false);      // FOCUS PAINTED FALSE
-        buttons.add(resRecherche);  //
-        buttons.add(resValider);    // ADD
+        rechercher.setFocusPainted(false);    //
+        valider.setFocusPainted(false);      // FOCUS PAINTED FALSE
+        buttons.add(rechercher);  //
+        buttons.add(valider);    // ADD
 
         add(buttons, c);
     }
 
-    public String getResNom() {
-        return resNom.getText();
+    public String getNom() {
+        return nom.getText();
     }
 
-    public String getResPrenom() {
-        return resPrenom.getText();
+    public String getPrenom() {
+        return prenom.getText();
     }
 
-    public String getResTitre() {
-        return resTitre.getText();
+    public String getTitre() {
+        return titre.getText();
     }
 
-    public String getResAuteur() {
-        return resAuteur.getText();
+    public String getAuteur() {
+        return auteur.getText();
     }
 
     public Reservation getSelectedRes() {
-        int row = tableResAll.getSelectedRow();
+        int row = table.getSelectedRow();
         if (row == -1) {
             return null;
         }
-        return modeleResAll.getValueAt(row);
+        return modele.getValueAt(row);
     }
 
     public TableModeleResAll getModel() {
-        return modeleResAll;
+        return modele;
     }
 
-    public void setResAllList(ArrayList<Reservation> res) {
-        modeleResAll.setListeRes(res);
+    public void setList(ArrayList<Reservation> res) {
+        modele.setListeRes(res);
     }
 
     public void addListener(BibliController controller) {
-        resNom.addKeyListener(controller.enterListener(resNom, "Res-Recherche"));
-        resPrenom.addKeyListener(controller.enterListener(resPrenom, "Res-Recherche"));
-        resTitre.addKeyListener(controller.enterListener(resTitre, "Res-Recherche"));
-        resAuteur.addKeyListener(controller.enterListener(resAuteur, "Res-Recherche"));
+        nom.addKeyListener(controller.enterListener(nom, "Res-Recherche"));
+        prenom.addKeyListener(controller.enterListener(prenom, "Res-Recherche"));
+        titre.addKeyListener(controller.enterListener(titre, "Res-Recherche"));
+        auteur.addKeyListener(controller.enterListener(auteur, "Res-Recherche"));
 
-        resRecherche.setActionCommand("Res-Recherche");
-        resRecherche.addActionListener(controller);
-        resValider.setActionCommand("Res-Valider");
-        resValider.addActionListener(controller);
+        rechercher.setActionCommand("Res-Recherche");
+        rechercher.addActionListener(controller);
+        valider.setActionCommand("Res-Valider");
+        valider.addActionListener(controller);
     }
 }

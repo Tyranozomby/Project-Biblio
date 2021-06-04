@@ -9,16 +9,16 @@ import java.awt.*;
 
 public class OngletGestionEtudiants extends JPanel {
 
-    private final JTextField infoEmail = new JTextField();
-    private final JTextField infoNom = new JTextField();
-    private final JTextField infoPrenom = new JTextField();
-    private final JTextField infoMdp = new JTextField();
+    private final JTextField email = new JTextField();
+    private final JTextField nom = new JTextField();
+    private final JTextField prenom = new JTextField();
+    private final JTextField mdp = new JTextField();
 
-    private final JComboBox<Etudiant> infoComboBox = new JComboBox<>();
+    private final JComboBox<Etudiant> comboBox = new JComboBox<>();
     private final JLabel labelID = new JLabel("", JLabel.CENTER);
 
-    private final JButton infoSauvegarder = new JButton("Sauvegarder");
-    private final JButton infoSupprimer = new JButton("Supprimer");
+    private final JButton sauvegarder = new JButton("Sauvegarder");
+    private final JButton supprimer = new JButton("Supprimer");
 
 
     public OngletGestionEtudiants() {
@@ -38,9 +38,9 @@ public class OngletGestionEtudiants extends JPanel {
         c.fill = GridBagConstraints.HORIZONTAL;
         c.ipadx = 100;
         c.ipady = 7;
-        infoComboBox.setFont(Constantes.FIELD_FONT);
-        infoComboBox.setBackground(Constantes.WHITE);
-        add(infoComboBox, c);
+        comboBox.setFont(Constantes.FIELD_FONT);
+        comboBox.setBackground(Constantes.WHITE);
+        add(comboBox, c);
 
         c.gridx = 1;
         c.anchor = GridBagConstraints.WEST;
@@ -53,25 +53,25 @@ public class OngletGestionEtudiants extends JPanel {
         c.gridx = 0;
         c.gridy = 1;
         JLabel labelNom = new JLabel("Nom de l'étudiant :");
-        labelNom.setLabelFor(infoNom);
+        labelNom.setLabelFor(nom);
         labelNom.setDisplayedMnemonic('n');
         add(labelNom, c);
 
         c.gridy = 2;
         JLabel labelPrenom = new JLabel("Prénom de l'étudiant :");
-        labelPrenom.setLabelFor(infoPrenom);
+        labelPrenom.setLabelFor(prenom);
         labelPrenom.setDisplayedMnemonic('p');
         add(labelPrenom, c);
 
         c.gridy = 3;
         JLabel labelEmail = new JLabel("Email de l'étudiant :");
-        labelEmail.setLabelFor(infoEmail);
+        labelEmail.setLabelFor(email);
         labelEmail.setDisplayedMnemonic('e');
         add(labelEmail, c);
 
         c.gridy = 4;
         JLabel labelMdp = new JLabel("Mot De Passe de l'étudiant :");
-        labelMdp.setLabelFor(infoMdp);
+        labelMdp.setLabelFor(mdp);
         labelMdp.setDisplayedMnemonic('m');
         add(labelMdp, c);
 
@@ -82,34 +82,34 @@ public class OngletGestionEtudiants extends JPanel {
         c.ipady = 7;
         c.anchor = GridBagConstraints.CENTER;
         c.fill = GridBagConstraints.HORIZONTAL;
-        infoNom.setFont(Constantes.FIELD_FONT);
-        infoNom.setBorder(Constantes.BORDER);
-        add(infoNom, c);
+        nom.setFont(Constantes.FIELD_FONT);
+        nom.setBorder(Constantes.BORDER);
+        add(nom, c);
 
         c.gridy = 2;
-        infoPrenom.setFont(Constantes.FIELD_FONT);
-        infoPrenom.setBorder(Constantes.BORDER);
-        add(infoPrenom, c);
+        prenom.setFont(Constantes.FIELD_FONT);
+        prenom.setBorder(Constantes.BORDER);
+        add(prenom, c);
 
         c.gridy = 3;
-        infoEmail.setFont(Constantes.FIELD_FONT);
-        infoEmail.setBorder(Constantes.BORDER);
-        add(infoEmail, c);
+        email.setFont(Constantes.FIELD_FONT);
+        email.setBorder(Constantes.BORDER);
+        add(email, c);
 
         c.gridy = 4;
-        infoMdp.setFont(Constantes.FIELD_FONT);
-        infoMdp.setBorder(Constantes.BORDER);
-        add(infoMdp, c);
+        mdp.setFont(Constantes.FIELD_FONT);
+        mdp.setBorder(Constantes.BORDER);
+        add(mdp, c);
 
         /* Début bouton */
         JPanel boutons = new JPanel(new GridLayout(2, 2, 10, 10));
         boutons.setOpaque(false);
 
-        infoSauvegarder.setFocusPainted(false);
-        infoSupprimer.setFocusPainted(false);
+        sauvegarder.setFocusPainted(false);
+        supprimer.setFocusPainted(false);
 
-        boutons.add(infoSauvegarder, c);
-        boutons.add(infoSupprimer, c);
+        boutons.add(sauvegarder, c);
+        boutons.add(supprimer, c);
 
         c.gridx = 0;
         c.gridy = 5;
@@ -119,27 +119,27 @@ public class OngletGestionEtudiants extends JPanel {
     }
 
     public int getStudentID() {
-        Etudiant etu = (Etudiant) infoComboBox.getSelectedItem();
+        Etudiant etu = (Etudiant) comboBox.getSelectedItem();
         if (etu == null) return -1;
         return etu.getId();
     }
 
     public Etudiant getInfoEtudiant(int ID) {
-        return new Etudiant(ID, infoPrenom.getText(), infoNom.getText(), infoEmail.getText(), infoMdp.getText());
+        return new Etudiant(ID, prenom.getText(), nom.getText(), email.getText(), mdp.getText());
     }
 
-    public void setZoneFill(Etudiant etudiant) {
+    public void fillInfoEtudiant(Etudiant etudiant) {
         if (etudiant == null) { //si null mettre a vide
-            infoEmail.setText("");
-            infoNom.setText("");
-            infoPrenom.setText("");
-            infoMdp.setText("");
+            email.setText("");
+            nom.setText("");
+            prenom.setText("");
+            mdp.setText("");
 
         } else { // mettre info étudiant
-            infoEmail.setText(etudiant.getEmail());
-            infoNom.setText(etudiant.getNom());
-            infoPrenom.setText(etudiant.getPrenom());
-            infoMdp.setText(etudiant.getMdp());
+            email.setText(etudiant.getEmail());
+            nom.setText(etudiant.getNom());
+            prenom.setText(etudiant.getPrenom());
+            mdp.setText(etudiant.getMdp());
         }
     }
 
@@ -148,17 +148,17 @@ public class OngletGestionEtudiants extends JPanel {
     }
 
     public JComboBox<Etudiant> getComboBox() {
-        return infoComboBox;
+        return comboBox;
     }
 
     public void addListener(BibliController controller) {
         // INFO ÉTUDIANTS
-        infoComboBox.setActionCommand("InfoEtu-Choisir");
-        infoComboBox.addActionListener(controller);
-        infoSauvegarder.setActionCommand("InfoEtu-Sauvegarder");
-        infoSauvegarder.addActionListener(controller);
-        infoSupprimer.setActionCommand("InfoEtu-Supprimer");
-        infoSupprimer.addActionListener(controller);
+        comboBox.setActionCommand("InfoEtu-Choisir");
+        comboBox.addActionListener(controller);
+        sauvegarder.setActionCommand("InfoEtu-Sauvegarder");
+        sauvegarder.addActionListener(controller);
+        supprimer.setActionCommand("InfoEtu-Supprimer");
+        supprimer.addActionListener(controller);
     }
 
 }

@@ -10,8 +10,8 @@ import java.awt.*;
 
 public class OngletEmpruntDirect extends JPanel {
 
-    private final JComboBox<Livre> empComboLivres = new JComboBox<>();
-    private final JComboBox<Etudiant> empComboEtu = new JComboBox<>();
+    private final JComboBox<Livre> comboLivres = new JComboBox<>();
+    private final JComboBox<Etudiant> comboEtu = new JComboBox<>();
     private final JButton empAjout = new JButton("Ajouter");
 
     public OngletEmpruntDirect() {
@@ -34,15 +34,15 @@ public class OngletEmpruntDirect extends JPanel {
         c.gridwidth = 1;
         c.ipadx = 100;
         c.ipady = 7;
-        empComboEtu.setFont(Constantes.FIELD_FONT);
-        empComboEtu.setBackground(Constantes.WHITE);
-        add(empComboEtu, c);
+        comboEtu.setFont(Constantes.FIELD_FONT);
+        comboEtu.setBackground(Constantes.WHITE);
+        add(comboEtu, c);
 
         c.gridx = 1;
         c.gridy = 1;
-        empComboLivres.setFont(Constantes.FIELD_FONT);
-        empComboLivres.setBackground(Constantes.WHITE);
-        add(empComboLivres, c);
+        comboLivres.setFont(Constantes.FIELD_FONT);
+        comboLivres.setBackground(Constantes.WHITE);
+        add(comboLivres, c);
 
         c.gridx = 0;
         c.gridy = 2;
@@ -57,20 +57,20 @@ public class OngletEmpruntDirect extends JPanel {
         add(empAjout, c);
     }
 
-    public Etudiant getEmpEtu() {
-        return (Etudiant) empComboEtu.getSelectedItem();
+    public Etudiant getSelectedEtu() {
+        return (Etudiant) comboEtu.getSelectedItem();
     }
 
-    public Livre getEmpLiv() {
-        return (Livre) empComboLivres.getSelectedItem();
+    public Livre getSelectedLiv() {
+        return (Livre) comboLivres.getSelectedItem();
     }
 
     public JComboBox<Livre> getComboLivres() {
-        return empComboLivres;
+        return comboLivres;
     }
 
     public JComboBox<Etudiant> getComboEtu() {
-        return empComboEtu;
+        return comboEtu;
     }
 
     public void addListener(BibliController controller) {

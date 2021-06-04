@@ -60,10 +60,10 @@ public class BibliController implements ActionListener {
 
                 if (id > 0) {
                     etu = DB.getStudent(id);
-                    gestionEtudiants.setZoneFill(etu);
+                    gestionEtudiants.fillInfoEtudiant(etu);
                     gestionEtudiants.setLabelID(Integer.toString(id));
                 } else {
-                    gestionEtudiants.setZoneFill(null);
+                    gestionEtudiants.fillInfoEtudiant(null);
                     gestionEtudiants.setLabelID("Aucun");
                 }
                 break;
@@ -90,26 +90,26 @@ public class BibliController implements ActionListener {
 
             // GESTION LIVRES
             case "Livre-Search":
-                gestionLivres.setBookList(DB.researchCorresponding(gestionLivres.getLivTitre(), gestionLivres.getLivAuteur()));
+                gestionLivres.setList(DB.researchCorresponding(gestionLivres.getTitre(), gestionLivres.getAuteur()));
                 break;
             case "Livre-Ajout":
-                if (!DB.canAddBook(gestionLivres.getLivTitre(), gestionLivres.getLivAuteur())) {
+                if (!DB.canAddBook(gestionLivres.getTitre(), gestionLivres.getAuteur())) {
                     break;
                 }
-                DB.createBook(gestionLivres.getLivTitre(), gestionLivres.getLivAuteur());
-                gestionLivres.setBookList(DB.researchCorresponding("", ""));
+                DB.createBook(gestionLivres.getTitre(), gestionLivres.getAuteur());
+                gestionLivres.setList(DB.researchCorresponding("", ""));
                 break;
             case "Livre-Suppression":
                 liv = gestionLivres.getSelectedBook();
                 if (liv != null) {
                     DB.supprBook(liv);
                 }
-                gestionLivres.setBookList(DB.researchCorresponding(gestionLivres.getLivTitre(), gestionLivres.getLivAuteur()));
+                gestionLivres.setList(DB.researchCorresponding(gestionLivres.getTitre(), gestionLivres.getAuteur()));
                 break;
 
             // VALIDER RÉSERVATION
             case "Res-Recherche":
-                validerRes.setResAllList(DB.getReservations(validerRes.getResNom(), validerRes.getResPrenom(), validerRes.getResTitre(), validerRes.getResAuteur()));
+                validerRes.setList(DB.getReservations(validerRes.getNom(), validerRes.getPrenom(), validerRes.getTitre(), validerRes.getAuteur()));
                 break;
             case "Res-Valider":
                 res = validerRes.getSelectedRes();
@@ -126,8 +126,8 @@ public class BibliController implements ActionListener {
 
             // EMPRUNT DIRECT
             case "Emprunt-Ajout":
-                etu = empruntDirect.getEmpEtu();
-                liv = empruntDirect.getEmpLiv();
+                etu = empruntDirect.getSelectedEtu();
+                liv = empruntDirect.getSelectedLiv();
                 if (DB.canAddEmprunt(etu, liv)) {
                     id = DB.exemplaireLibrePour(liv);
                     if (id != 0) {
@@ -139,13 +139,13 @@ public class BibliController implements ActionListener {
 
             // RETOUR EMPRUNT
             case "Retour-Recherche":
-                retourEmprunt.setEmpAllList(DB.getEmprunts(retourEmprunt.getRetourNom(), retourEmprunt.getRetourPrenom(), retourEmprunt.getRetourTitre(), retourEmprunt.getRetourAuteur(), retourEmprunt.isCheckboxSelected()));
+                retourEmprunt.setList(DB.getEmprunts(retourEmprunt.getNom(), retourEmprunt.getPrenom(), retourEmprunt.getTitre(), retourEmprunt.getAuteur(), retourEmprunt.isCheckboxSelected()));
                 break;
             case "Retour-Rendu":
                 emp = retourEmprunt.getRetourSelectedEmp();
                 if (emp != null) {
                     DB.retourEmprunt(emp);
-                    retourEmprunt.setEmpAllList(DB.getEmprunts(retourEmprunt.getRetourNom(), retourEmprunt.getRetourPrenom(), retourEmprunt.getRetourTitre(), retourEmprunt.getRetourAuteur(), retourEmprunt.isCheckboxSelected()));
+                    retourEmprunt.setList(DB.getEmprunts(retourEmprunt.getNom(), retourEmprunt.getPrenom(), retourEmprunt.getTitre(), retourEmprunt.getAuteur(), retourEmprunt.isCheckboxSelected()));
                 }
                 break;
             case "Retour-Relance":
@@ -185,7 +185,7 @@ public class BibliController implements ActionListener {
         for (Livre liv : DB.researchCorresponding("", "")) {
             empruntDirect.getComboLivres().addItem(liv);
         }
-        retourEmprunt.getModel().setListeEmp(DB.getEmprunts());
+        retourEmprunt.getModel().setListeEmp(DB.getEmprunts(retourEmprunt.isCheckboxSelected()));
         validerRes.getModel().setListeRes(DB.getReservations());
         gestionLivres.getModel().setListeLivres(DB.researchCorresponding("", ""));
         gestionEtudiants.getComboBox().setSelectedIndex(0);

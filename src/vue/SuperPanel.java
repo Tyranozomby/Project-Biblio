@@ -59,7 +59,6 @@ public class SuperPanel extends JPanel {
     public void setStudentPanel(Etudiant student) {
         studentPanel.setStudent(student);
         layout.show(this, "panelEtu");
-        studentPanel.setFocus();
     }
 
     /**

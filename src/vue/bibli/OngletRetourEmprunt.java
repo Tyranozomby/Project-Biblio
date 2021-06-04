@@ -12,18 +12,18 @@ import java.util.ArrayList;
 
 public class OngletRetourEmprunt extends JPanel {
 
-    private final JTextField retourNom = new JTextField();
-    private final JTextField retourPrenom = new JTextField();
-    private final JTextField retourTitre = new JTextField();
-    private final JTextField retourAuteur = new JTextField();
+    private final JTextField nom = new JTextField();
+    private final JTextField prenom = new JTextField();
+    private final JTextField titre = new JTextField();
+    private final JTextField auteur = new JTextField();
     private final JCheckBox onlyLate = new JCheckBox("Ne montrer que les retards");
 
-    private final JButton retourRecherche = new JButton("Rechercher");
-    private final JButton retourRendu = new JButton("Livre bien rendu");
-    private final JButton retourRelance = new JButton("Relancer l'élève");
+    private final JButton rechercher = new JButton("Rechercher");
+    private final JButton rendu = new JButton("Livre bien rendu");
+    private final JButton relance = new JButton("Relancer l'élève");
 
-    private final TableModeleEmpAll modeleEmpAll = new TableModeleEmpAll();
-    private final JTable tableEmpAll = new JTable(modeleEmpAll);
+    private final TableModeleEmpAll modele = new TableModeleEmpAll();
+    private final JTable table = new JTable(modele);
 
     public OngletRetourEmprunt() {
         setOpaque(false);
@@ -34,15 +34,15 @@ public class OngletRetourEmprunt extends JPanel {
         // TABLEAU
         c.gridy = 1;
         c.gridwidth = 1;
-        tableEmpAll.setFocusable(false);
-        tableEmpAll.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        tableEmpAll.getColumnModel().getColumn(0).setPreferredWidth(300);  //
-        tableEmpAll.getColumnModel().getColumn(1).setPreferredWidth(250);  // Column size
-        tableEmpAll.getColumnModel().getColumn(2).setPreferredWidth(150);  //
-        tableEmpAll.getColumnModel().getColumn(3).setPreferredWidth(100);  //
-        tableEmpAll.setRowHeight(15);
+        table.setFocusable(false);
+        table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        table.getColumnModel().getColumn(0).setPreferredWidth(300);  //
+        table.getColumnModel().getColumn(1).setPreferredWidth(250);  // Column size
+        table.getColumnModel().getColumn(2).setPreferredWidth(150);  //
+        table.getColumnModel().getColumn(3).setPreferredWidth(100);  //
+        table.setRowHeight(15);
 
-        JScrollPane scrollPane = new JScrollPane(tableEmpAll);
+        JScrollPane scrollPane = new JScrollPane(table);
         scrollPane.setPreferredSize(new Dimension(800, 218));
         scrollPane.getViewport().setBackground(Constantes.WHITE);
         scrollPane.setBorder(Constantes.BORDER);
@@ -58,40 +58,40 @@ public class OngletRetourEmprunt extends JPanel {
         fields.setOpaque(false);
 
         JLabel nomEtu = new JLabel("Nom élève:");
-        nomEtu.setLabelFor(retourNom);
+        nomEtu.setLabelFor(nom);
         nomEtu.setDisplayedMnemonic('n');
         fields.add(nomEtu);
 
-        retourNom.setFont(Constantes.FIELD_FONT);
-        retourNom.setBorder(Constantes.BORDER);
-        fields.add(retourNom);
+        nom.setFont(Constantes.FIELD_FONT);
+        nom.setBorder(Constantes.BORDER);
+        fields.add(nom);
 
         JLabel prenomEtu = new JLabel("Prénom élève:");
-        prenomEtu.setLabelFor(retourPrenom);
+        prenomEtu.setLabelFor(prenom);
         prenomEtu.setDisplayedMnemonic('p');
         fields.add(prenomEtu);
 
-        retourPrenom.setFont(Constantes.FIELD_FONT);
-        retourPrenom.setBorder(Constantes.BORDER);
-        fields.add(retourPrenom);
+        prenom.setFont(Constantes.FIELD_FONT);
+        prenom.setBorder(Constantes.BORDER);
+        fields.add(prenom);
 
-        JLabel titre = new JLabel("Titre:");
-        titre.setLabelFor(retourTitre);
-        titre.setDisplayedMnemonic('t');
+        JLabel labelTitre = new JLabel("Titre:");
+        labelTitre.setLabelFor(this.titre);
+        labelTitre.setDisplayedMnemonic('t');
+        fields.add(labelTitre);
+
+        titre.setFont(Constantes.FIELD_FONT);
+        titre.setBorder(Constantes.BORDER);
         fields.add(titre);
 
-        retourTitre.setFont(Constantes.FIELD_FONT);
-        retourTitre.setBorder(Constantes.BORDER);
-        fields.add(retourTitre);
+        JLabel labelAuteur = new JLabel("Auteur:");
+        labelAuteur.setLabelFor(auteur);
+        labelAuteur.setDisplayedMnemonic('a');
+        fields.add(labelAuteur);
 
-        JLabel auteur = new JLabel("Auteur:");
-        auteur.setLabelFor(retourAuteur);
-        auteur.setDisplayedMnemonic('a');
+        auteur.setFont(Constantes.FIELD_FONT);
+        auteur.setBorder(Constantes.BORDER);
         fields.add(auteur);
-
-        retourAuteur.setFont(Constantes.FIELD_FONT);
-        retourAuteur.setBorder(Constantes.BORDER);
-        fields.add(retourAuteur);
 
         onlyLate.setOpaque(false);
         onlyLate.setFocusPainted(false);
@@ -106,31 +106,31 @@ public class OngletRetourEmprunt extends JPanel {
         c.gridwidth = 1;
         JPanel boutons = new JPanel(new GridLayout(1, 3, 10, 10));
         boutons.setOpaque(false);
-        retourRecherche.setFocusPainted(false); //
-        retourRendu.setFocusPainted(false);     // FOCUS PAINTED FALSE
-        retourRelance.setFocusPainted(false);   //
-        boutons.add(retourRecherche);   //
-        boutons.add(retourRendu);       // ADD
-        boutons.add(retourRelance);     //
+        rechercher.setFocusPainted(false);  //
+        rendu.setFocusPainted(false);       // FOCUS PAINTED FALSE
+        relance.setFocusPainted(false);     //
+        boutons.add(rechercher);    //
+        boutons.add(rendu);         // ADD
+        boutons.add(relance);       //
 
         add(boutons, c);
     }
 
 
-    public String getRetourNom() {
-        return retourNom.getText();
+    public String getNom() {
+        return nom.getText();
     }
 
-    public String getRetourPrenom() {
-        return retourPrenom.getText();
+    public String getPrenom() {
+        return prenom.getText();
     }
 
-    public String getRetourTitre() {
-        return retourTitre.getText();
+    public String getTitre() {
+        return titre.getText();
     }
 
-    public String getRetourAuteur() {
-        return retourAuteur.getText();
+    public String getAuteur() {
+        return auteur.getText();
     }
 
     public boolean isCheckboxSelected() {
@@ -138,19 +138,19 @@ public class OngletRetourEmprunt extends JPanel {
     }
 
     public Emprunt getRetourSelectedEmp() {
-        int row = tableEmpAll.getSelectedRow();
+        int row = table.getSelectedRow();
         if (row == -1) {
             return null;
         }
-        return modeleEmpAll.getValueAt(row);
+        return modele.getValueAt(row);
     }
 
     public TableModeleEmpAll getModel() {
-        return modeleEmpAll;
+        return modele;
     }
 
-    public void setEmpAllList(ArrayList<Emprunt> emp) {
-        modeleEmpAll.setListeEmp(emp);
+    public void setList(ArrayList<Emprunt> emp) {
+        modele.setListeEmp(emp);
     }
 
     public void sendMailRelance(Etudiant student) {
@@ -161,19 +161,19 @@ public class OngletRetourEmprunt extends JPanel {
     }
 
     public void addListener(BibliController controller) {
-        retourNom.addKeyListener(controller.enterListener(retourNom, "Retour-Recherche"));
-        retourPrenom.addKeyListener(controller.enterListener(retourPrenom, "Retour-Recherche"));
-        retourTitre.addKeyListener(controller.enterListener(retourTitre, "Retour-Recherche"));
-        retourAuteur.addKeyListener(controller.enterListener(retourAuteur, "Retour-Recherche"));
+        nom.addKeyListener(controller.enterListener(nom, "Retour-Recherche"));
+        prenom.addKeyListener(controller.enterListener(prenom, "Retour-Recherche"));
+        titre.addKeyListener(controller.enterListener(titre, "Retour-Recherche"));
+        auteur.addKeyListener(controller.enterListener(auteur, "Retour-Recherche"));
 
         onlyLate.setActionCommand("Retour-Recherche");
         onlyLate.addActionListener(controller);
-        retourRecherche.setActionCommand("Retour-Recherche");
-        retourRecherche.addActionListener(controller);
-        retourRendu.setActionCommand("Retour-Rendu");
-        retourRendu.addActionListener(controller);
-        retourRelance.setActionCommand("Retour-Relance");
-        retourRelance.addActionListener(controller);
+        rechercher.setActionCommand("Retour-Recherche");
+        rechercher.addActionListener(controller);
+        rendu.setActionCommand("Retour-Rendu");
+        rendu.addActionListener(controller);
+        relance.setActionCommand("Retour-Relance");
+        relance.addActionListener(controller);
     }
 
 }

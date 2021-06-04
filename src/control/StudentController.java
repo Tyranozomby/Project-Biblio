@@ -5,6 +5,9 @@ import modele.Etudiant;
 import modele.Livre;
 import modele.Reservation;
 import util.DataBase;
+import vue.etudiant.OngletMesRes;
+import vue.etudiant.OngletNewRes;
+import vue.etudiant.OngletProfil;
 import vue.etudiant.StudentPanel;
 
 import java.awt.event.*;
@@ -16,74 +19,81 @@ import java.awt.event.*;
  */
 public class StudentController implements ActionListener {
 
-    private final StudentPanel panelPrincipal;
+    private final OngletNewRes newRes;
+    private final OngletMesRes mesRes;
+    private final OngletProfil profil;
+    private final Etudiant student;
     private final DataBase DB;
 
-
-    public StudentController(StudentPanel studentPanel, DataBase DB) {
-
-        this.panelPrincipal = studentPanel;
+    public StudentController(OngletNewRes newRes, OngletMesRes mesRes, OngletProfil profil, Etudiant student, DataBase DB) {
+        this.newRes = newRes;
+        this.mesRes = mesRes;
+        this.profil = profil;
+        this.student = student;
         this.DB = DB;
 
-        panelPrincipal.setBookList(DB.researchCorresponding(panelPrincipal.getTitre(), panelPrincipal.getAuteur()));
+        newRes.setBookList(DB.researchCorresponding(newRes.getTitre(), newRes.getAuteur()));
+        updateStudentRes();
+        updateStudentEmp();
 
-        this.panelPrincipal.addListener(this);
+        this.newRes.addListener(this);
+        this.mesRes.addListener(this);
+        this.profil.addListener(this);
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        Livre book = panelPrincipal.getSelectedBook();
-        Etudiant stu = panelPrincipal.getStudent();
-        Reservation res = panelPrincipal.getSelectedRes();
+        Livre liv = newRes.getSelectedBook();
+        Reservation res = mesRes.getSelectedRes();
         switch (e.getActionCommand()) {
             case "Rechercher":
-                panelPrincipal.setBookList(DB.researchCorresponding(panelPrincipal.getTitre(), panelPrincipal.getAuteur()));
-                panelPrincipal.setInfoMessageLiv(Constantes.BASIC_MESSAGE);
+                newRes.setBookList(DB.researchCorresponding(newRes.getTitre(), newRes.getAuteur()));
+                newRes.setInfoMessageLiv(Constantes.BASIC_MESSAGE);
                 break;
             case "Réserver":
-                if (book != null) {
-                    if (DB.getNumberRes(stu) < Constantes.MAX_RES) {
-                        if (DB.canReserveBook(stu, book)) {
-                            DB.addReservation(book, panelPrincipal.getStudent());
-                            panelPrincipal.setInfoMessageLiv(Constantes.SUCCESS);
+                if (liv != null) {
+                    if (DB.getNumberRes(student) < Constantes.MAX_RES) {
+                        if (DB.canReserveBook(student, liv)) {
+                            DB.addReservation(liv, student);
+                            newRes.setInfoMessageLiv(Constantes.SUCCESS);
                             updateStudentRes();
                         } else {
-                            panelPrincipal.setInfoMessageLiv(Constantes.ALREADY_RESERVED);
+                            newRes.setInfoMessageLiv(Constantes.ALREADY_RESERVED);
                         }
                     } else {
-                        panelPrincipal.setInfoMessageLiv(Constantes.MAX_RES_REACHED);
+                        newRes.setInfoMessageLiv(Constantes.MAX_RES_REACHED);
                     }
                 } else {
-                    panelPrincipal.setInfoMessageLiv(Constantes.NO_SELECTION);
+                    newRes.setInfoMessageLiv(Constantes.NO_SELECTION);
                 }
                 break;
             case "Supprimer":
                 if (res != null) {
-                    DB.deleteReservation(res, stu);
+                    DB.deleteReservation(res, student);
                     updateStudentRes();
-                    stu.setNbRes(DB.getNumberRes(stu));
-                    panelPrincipal.setInfoMessageRes(Constantes.SUCCESS);
-                    panelPrincipal.setInfoMessageLiv(Constantes.BASIC_MESSAGE);
+                    student.setNbRes(DB.getNumberRes(student));
+                    mesRes.setInfoMessageRes(Constantes.SUCCESS);
+                    newRes.setInfoMessageLiv(Constantes.BASIC_MESSAGE);
                 } else {
-                    panelPrincipal.setInfoMessageRes(Constantes.NO_SELECTION);
+                    mesRes.setInfoMessageRes(Constantes.NO_SELECTION);
                 }
                 break;
             case "Changer mdp":
-                String[] newMdp = panelPrincipal.getNewMdp();
+                String[] newMdp = profil.getNewMdp();
                 String mdp1 = newMdp[0];
                 String mdp2 = newMdp[1];
                 if (mdp1.equals(mdp2) && !mdp1.equals("")) {
-                    String mdp = DB.newPassword(panelPrincipal.getStudent(), mdp1);
+                    String mdp = DB.newPassword(student, mdp1);
                     if (mdp != null) {
-                        panelPrincipal.setNewMdp(mdp);
-                        panelPrincipal.setInfoMessageEmp(Constantes.SUCCESS);
+                        profil.setNewMdp(mdp);
+                        profil.setInfoMessageEmp(Constantes.SUCCESS);
                     } else {
-                        panelPrincipal.setInfoMessageEmp(Constantes.MDP_INV);
-                        panelPrincipal.resetMdpChange();
+                        profil.setInfoMessageEmp(Constantes.MDP_INV);
+                        profil.resetMdpChange();
                     }
                 } else {
-                    panelPrincipal.setInfoMessageEmp(Constantes.MDP_DIFF);
-                    panelPrincipal.resetMdpChange();
+                    profil.setInfoMessageEmp(Constantes.MDP_DIFF);
+                    profil.resetMdpChange();
                 }
                 break;
         }
@@ -101,10 +111,10 @@ public class StudentController implements ActionListener {
     }
 
     public void updateStudentRes() {
-        panelPrincipal.setResList(DB.getReservations(panelPrincipal.getStudent()));
+        mesRes.setResList(DB.getReservations(student));
     }
 
     public void updateStudentEmp() {
-        panelPrincipal.setEmpList(DB.getEmprunts(panelPrincipal.getStudent()));
+        profil.setEmpList(DB.getEmprunts(student));
     }
 }

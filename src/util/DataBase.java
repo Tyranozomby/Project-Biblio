@@ -375,12 +375,17 @@ public class DataBase {
         return null;
     }
 
-    public ArrayList<Emprunt> getEmprunts() {
+    public ArrayList<Emprunt> getEmprunts(boolean onlyLate) {
         ArrayList<Emprunt> listeEmp = new ArrayList<>();
         SimpleDateFormat fmt = new SimpleDateFormat("dd MMM yyyy");
-
+        ResultSet rSet;
         try {
-            ResultSet rSet = stmt.executeQuery("SELECT LIVRE.ID_LIV, AUTEUR, TITRE, DATE_RETOUR, EMPRUNT.ID_EX, ETUDIANT.ID_ET, PRENOM, NOM, EMAIL, MDP FROM LIVRE, EXEMPLAIRE, EMPRUNT, ETUDIANT WHERE LIVRE.ID_LIV = EXEMPLAIRE.ID_LIV and EXEMPLAIRE.ID_EX = EMPRUNT.ID_EX and EMPRUNT.ID_ET = ETUDIANT.ID_ET ORDER BY DATE_RETOUR, TITRE, AUTEUR, ID_EX");
+            if (!onlyLate) {
+                rSet = stmt.executeQuery("SELECT LIVRE.ID_LIV, AUTEUR, TITRE, DATE_RETOUR, EMPRUNT.ID_EX, ETUDIANT.ID_ET, PRENOM, NOM, EMAIL, MDP FROM LIVRE, EXEMPLAIRE, EMPRUNT, ETUDIANT WHERE LIVRE.ID_LIV = EXEMPLAIRE.ID_LIV and EXEMPLAIRE.ID_EX = EMPRUNT.ID_EX and EMPRUNT.ID_ET = ETUDIANT.ID_ET ORDER BY DATE_RETOUR, TITRE, AUTEUR, ID_EX");
+            } else {
+                rSet = stmt.executeQuery("SELECT LIVRE.ID_LIV, AUTEUR, TITRE, DATE_RETOUR, EMPRUNT.ID_EX, ETUDIANT.ID_ET, PRENOM, NOM, EMAIL, MDP FROM LIVRE, EXEMPLAIRE, EMPRUNT, ETUDIANT WHERE LIVRE.ID_LIV = EXEMPLAIRE.ID_LIV and EXEMPLAIRE.ID_EX = EMPRUNT.ID_EX and EMPRUNT.ID_ET = ETUDIANT.ID_ET and EMPRUNT.DATE_RETOUR < SYSDATE ORDER BY DATE_RETOUR, TITRE, AUTEUR, ID_EX");
+
+            }
             while (rSet.next()) {
                 Livre liv = new Livre(rSet.getInt(1), rSet.getString(2), rSet.getString(3));
                 String fin = fmt.format(rSet.getDate(4));
@@ -404,8 +409,7 @@ public class DataBase {
         try {
             if (!selected) {
                 rSet = stmt.executeQuery("SELECT LIVRE.ID_LIV, AUTEUR, TITRE, DATE_RETOUR, EMPRUNT.ID_EX, ETUDIANT.ID_ET, PRENOM, NOM, EMAIL, MDP FROM LIVRE, EXEMPLAIRE, EMPRUNT, ETUDIANT WHERE LIVRE.ID_LIV = EXEMPLAIRE.ID_LIV and EXEMPLAIRE.ID_EX = EMPRUNT.ID_EX and EMPRUNT.ID_ET = ETUDIANT.ID_ET and UPPER(NOM) like UPPER('%" + nom + "%') and UPPER(PRENOM) like UPPER('%" + prenom + "%') and UPPER(AUTEUR) like UPPER('%" + auteur + "%') and UPPER(TITRE) like UPPER('%" + titre + "%') ORDER BY DATE_RETOUR, TITRE, AUTEUR, ID_EX");
-            }
-            else {
+            } else {
                 rSet = stmt.executeQuery("SELECT LIVRE.ID_LIV, AUTEUR, TITRE, DATE_RETOUR, EMPRUNT.ID_EX, ETUDIANT.ID_ET, PRENOM, NOM, EMAIL, MDP FROM LIVRE, EXEMPLAIRE, EMPRUNT, ETUDIANT WHERE LIVRE.ID_LIV = EXEMPLAIRE.ID_LIV and EXEMPLAIRE.ID_EX = EMPRUNT.ID_EX and EMPRUNT.ID_ET = ETUDIANT.ID_ET and EMPRUNT.DATE_RETOUR < SYSDATE and UPPER(NOM) like UPPER('%" + nom + "%') and UPPER(PRENOM) like UPPER('%" + prenom + "%') and UPPER(AUTEUR) like UPPER('%" + auteur + "%') and UPPER(TITRE) like UPPER('%" + titre + "%') ORDER BY DATE_RETOUR, TITRE, AUTEUR, ID_EX");
 
             }
