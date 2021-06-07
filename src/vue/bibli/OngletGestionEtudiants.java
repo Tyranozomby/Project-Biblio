@@ -16,6 +16,7 @@ public class OngletGestionEtudiants extends JPanel {
 
     private final JComboBox<Etudiant> comboBox = new JComboBox<>();
     private final JLabel labelID = new JLabel("", JLabel.CENTER);
+    private final JLabel infoMessage = new JLabel("", JLabel.RIGHT);
 
     private final JButton sauvegarder = new JButton("Sauvegarder");
     private final JButton supprimer = new JButton("Supprimer");
@@ -78,28 +79,39 @@ public class OngletGestionEtudiants extends JPanel {
         // FIELDS
         c.gridx = 1;
         c.gridy = 1;
-        c.ipadx = 100;
-        c.ipady = 7;
+        c.ipadx = 0;
+        c.ipady = 0;
         c.anchor = GridBagConstraints.CENTER;
         c.fill = GridBagConstraints.HORIZONTAL;
         nom.setFont(Constantes.FIELD_FONT);
         nom.setBorder(Constantes.BORDER);
+        nom.setPreferredSize(Constantes.FIELD_SIZE);
         add(nom, c);
 
         c.gridy = 2;
         prenom.setFont(Constantes.FIELD_FONT);
         prenom.setBorder(Constantes.BORDER);
+        prenom.setPreferredSize(Constantes.FIELD_SIZE);
         add(prenom, c);
 
         c.gridy = 3;
         email.setFont(Constantes.FIELD_FONT);
         email.setBorder(Constantes.BORDER);
+        email.setPreferredSize(Constantes.FIELD_SIZE);
         add(email, c);
 
         c.gridy = 4;
         mdp.setFont(Constantes.FIELD_FONT);
         mdp.setBorder(Constantes.BORDER);
+        mdp.setPreferredSize(Constantes.FIELD_SIZE);
         add(mdp, c);
+
+        c.gridx = 0;
+        c.gridy = 5;
+        c.gridwidth = 2;
+        c.anchor = GridBagConstraints.EAST;
+        setInfoMessage(Constantes.BASIC_MESSAGE);
+        add(infoMessage, c);
 
         /* Début bouton */
         JPanel boutons = new JPanel(new GridLayout(2, 2, 10, 10));
@@ -112,8 +124,8 @@ public class OngletGestionEtudiants extends JPanel {
         boutons.add(supprimer, c);
 
         c.gridx = 0;
-        c.gridy = 5;
-        c.gridwidth = 2;
+        c.gridy = 6;
+        c.ipady = 10;
         add(boutons, c);
         /* Fin boutons */
     }
@@ -126,6 +138,10 @@ public class OngletGestionEtudiants extends JPanel {
 
     public Etudiant getInfoEtudiant(int ID) {
         return new Etudiant(ID, prenom.getText(), nom.getText(), email.getText(), mdp.getText());
+    }
+
+    public JComboBox<Etudiant> getComboBox() {
+        return comboBox;
     }
 
     public void fillInfoEtudiant(Etudiant etudiant) {
@@ -143,12 +159,25 @@ public class OngletGestionEtudiants extends JPanel {
         }
     }
 
+    public void setInfoMessage(int i) {
+        if (i == Constantes.BASIC_MESSAGE) {
+            infoMessage.setText("Onglet de gestion des étudiants");
+            infoMessage.setForeground(Constantes.BLACK);
+        } else if (i == Constantes.SUCCESS) {
+            infoMessage.setText("Les modifications ont bien été prises en compte");
+            infoMessage.setForeground(Constantes.GREEN);
+        } else if (i == Constantes.ERROR) {
+            infoMessage.setText("Veuillez remplir tous les champs");
+            infoMessage.setForeground(Constantes.RED);
+        }
+    }
+
     public void setLabelID(String ID) {
         labelID.setText("ID :        " + ID);
     }
 
-    public JComboBox<Etudiant> getComboBox() {
-        return comboBox;
+    public void toggleSuppr(boolean bool) {
+        supprimer.setEnabled(bool);
     }
 
     public void addListener(BibliController controller) {

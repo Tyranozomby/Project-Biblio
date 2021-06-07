@@ -12,7 +12,7 @@ import java.util.ArrayList;
 
 public class OngletNewRes extends JPanel {
 
-    private final JLabel infoLiv = new JLabel();
+    private final JLabel infoMessage = new JLabel();
     private final JTextField titreField = new JTextField();
     private final JTextField auteurField = new JTextField();
     private final JButton searchButton = new JButton("Rechercher");
@@ -94,8 +94,8 @@ public class OngletNewRes extends JPanel {
         c.gridwidth = 1;
         c.anchor = GridBagConstraints.EAST;
         c.fill = GridBagConstraints.NONE;
-        setInfoMessageLiv(Constantes.BASIC_MESSAGE);
-        add(infoLiv, c);
+        setInfoMessage(Constantes.BASIC_MESSAGE);
+        add(infoMessage, c);
 
         c.gridx = 0;
         c.gridy = 4;
@@ -134,7 +134,7 @@ public class OngletNewRes extends JPanel {
         if (row == -1) { // No book selected
             return null;
         }
-        setInfoMessageLiv(Constantes.BASIC_MESSAGE);
+        setInfoMessage(Constantes.BASIC_MESSAGE);
         return modeleLiv.getValueAt(row);
     }
 
@@ -151,22 +151,22 @@ public class OngletNewRes extends JPanel {
     /**
      * @param i int corresponding to message wanted
      */
-    public void setInfoMessageLiv(int i) {
+    public void setInfoMessage(int i) {
         if (i == Constantes.NO_SELECTION) { // No book selected
-            infoLiv.setText("Aucun livre sélectionné");
-            infoLiv.setForeground(Constantes.ERROR);
+            infoMessage.setText("Aucun livre sélectionné");
+            infoMessage.setForeground(Constantes.RED);
         } else if (i == Constantes.BASIC_MESSAGE) {
-            infoLiv.setText((Constantes.MAX_RES - student.getNbRes()) + " réservations possibles");
-            infoLiv.setForeground(Constantes.BLACK);
+            infoMessage.setText((Constantes.MAX_RES - student.getNbRes()) + " réservations possibles");
+            infoMessage.setForeground(Constantes.BLACK);
         } else if (i == Constantes.MAX_RES_REACHED) {
-            infoLiv.setText("Nombre maximal de réservation atteint (" + Constantes.MAX_RES + ")");
-            infoLiv.setForeground(Constantes.ERROR);
+            infoMessage.setText("Nombre maximal de réservation atteint (" + Constantes.MAX_RES + ")");
+            infoMessage.setForeground(Constantes.RED);
         } else if (i == Constantes.ALREADY_RESERVED) {
-            infoLiv.setText("Vous avez déjà réservé ce livre");
-            infoLiv.setForeground(Constantes.ERROR);
+            infoMessage.setText("Vous avez déjà réservé ce livre");
+            infoMessage.setForeground(Constantes.RED);
         } else if (i == Constantes.SUCCESS) {
-            infoLiv.setText("Réservation effectuée, plus que " + (Constantes.MAX_RES - student.getNbRes()) + " possibles");
-            infoLiv.setForeground(Constantes.VALID);
+            infoMessage.setText("Réservation effectuée, plus que " + (Constantes.MAX_RES - student.getNbRes()) + " possibles");
+            infoMessage.setForeground(Constantes.GREEN);
         }
     }
 

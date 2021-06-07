@@ -11,6 +11,8 @@ import java.util.ArrayList;
 
 public class OngletGestionLivres extends JPanel {
 
+    private final JLabel infoMessage = new JLabel("", JLabel.RIGHT);
+
     private final JTextField titre = new JTextField();
     private final JTextField auteur = new JTextField();
 
@@ -22,7 +24,6 @@ public class OngletGestionLivres extends JPanel {
     private final JTable table = new JTable(modele);
 
     public OngletGestionLivres() {
-        //Onglet nouvelles réservations
         setLayout(new GridBagLayout());
         setOpaque(false);
 
@@ -68,6 +69,14 @@ public class OngletGestionLivres extends JPanel {
         labelAuteur.setDisplayedMnemonic('a');
         add(labelAuteur, c);
 
+        c.gridx = 0;
+        c.gridy = 2;
+        c.gridwidth = 2;
+        c.anchor = GridBagConstraints.EAST;
+        setInfoMessage(Constantes.BASIC_MESSAGE);
+        add(infoMessage, c);
+
+
         //**********Début boutons**********
         JPanel panelBoutons = new JPanel(new GridLayout(1, 2, 20, 2));
         panelBoutons.setOpaque(false);
@@ -81,7 +90,7 @@ public class OngletGestionLivres extends JPanel {
         panelBoutons.add(supprimer);
 
         c.gridx = 0;
-        c.gridy = 2;
+        c.gridy = 3;
         c.gridwidth = 2;
         c.anchor = GridBagConstraints.CENTER;
         c.fill = GridBagConstraints.HORIZONTAL;
@@ -132,6 +141,22 @@ public class OngletGestionLivres extends JPanel {
 
     public void setList(ArrayList<Livre> liste) {
         modele.setListeLivres(liste);
+    }
+
+    public void setInfoMessage(int i) {
+        if (i == Constantes.BASIC_MESSAGE) {
+            infoMessage.setText("Onglet de gestion des livres");
+            infoMessage.setForeground(Constantes.BLACK);
+        } else if (i == Constantes.SUCCESS) {
+            infoMessage.setText("Votre action a bien été exécutée");
+            infoMessage.setForeground(Constantes.GREEN);
+        } else if (i == Constantes.NO_SELECTION) {
+            infoMessage.setText("Veuillez sélectionner le livre que vous souhaitez supprimer");
+            infoMessage.setForeground(Constantes.RED);
+        } else if (i == Constantes.ERROR) {
+            infoMessage.setText("Tous les champs ne sont pas remplis ou ce livre existe déjà");
+            infoMessage.setForeground(Constantes.RED);
+        }
     }
 
     public void addListener(BibliController controller) {

@@ -136,13 +136,13 @@ public class OngletProfil extends JPanel {
     public void setInfoMessageEmp(int i) {
         if (i == Constantes.SUCCESS) {
             infoEmp.setText("Votre mot de passe a bien été changé");
-            infoEmp.setForeground(Constantes.VALID);
+            infoEmp.setForeground(Constantes.GREEN);
         } else if (i == Constantes.MDP_DIFF) {
             infoEmp.setText("Mots de passe différents");
-            infoEmp.setForeground(Constantes.ERROR);
+            infoEmp.setForeground(Constantes.RED);
         } else if (i == Constantes.MDP_INV) {
             infoEmp.setText("Mot de passe invalide");
-            infoEmp.setForeground(Constantes.ERROR);
+            infoEmp.setForeground(Constantes.RED);
         }
     }
 

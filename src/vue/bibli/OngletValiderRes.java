@@ -11,6 +11,8 @@ import java.util.ArrayList;
 
 public class OngletValiderRes extends JPanel {
 
+    private final JLabel infoMessage = new JLabel("", JLabel.RIGHT);
+
     private final JTextField nom = new JTextField();
     private final JTextField prenom = new JTextField();
     private final JTextField titre = new JTextField();
@@ -29,8 +31,14 @@ public class OngletValiderRes extends JPanel {
         GridBagConstraints c = new GridBagConstraints();
         c.insets = new Insets(8, 8, 8, 8);
 
-        c.gridx = 0;
         c.gridy = 1;
+        c.anchor = GridBagConstraints.EAST;
+        setInfoMessage(Constantes.BASIC_MESSAGE);
+        add(infoMessage, c);
+
+        c.gridx = 0;
+        c.gridy = 2;
+        c.anchor = GridBagConstraints.CENTER;
         table.setFocusable(false);
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         table.setRowHeight(15);
@@ -45,12 +53,17 @@ public class OngletValiderRes extends JPanel {
         scrollPane.setBorder(Constantes.BORDER);
         add(scrollPane, c);
 
-        c.insets = new Insets(8, 250, 8, 250);
+        c.insets = new Insets(8, 220, 8, 220);
         c.gridx = 0;
         c.gridy = 0;
         c.fill = GridBagConstraints.HORIZONTAL;
         JPanel fields = new JPanel(new GridLayout(4, 2, 10, 10));
         fields.setOpaque(false);
+
+        nom.setPreferredSize(Constantes.FIELD_SIZE);
+        prenom.setPreferredSize(Constantes.FIELD_SIZE);
+        titre.setPreferredSize(Constantes.FIELD_SIZE);
+        auteur.setPreferredSize(Constantes.FIELD_SIZE);
 
         JLabel nomEtu = new JLabel("Nom élève:");
         nomEtu.setLabelFor(nom);
@@ -70,26 +83,26 @@ public class OngletValiderRes extends JPanel {
         prenom.setBorder(Constantes.BORDER);
         fields.add(prenom);
 
-        JLabel titre = new JLabel("Titre:");
-        titre.setLabelFor(this.titre);
-        titre.setDisplayedMnemonic('t');
+        JLabel labelTitre = new JLabel("Titre:");
+        labelTitre.setLabelFor(titre);
+        labelTitre.setDisplayedMnemonic('t');
+        fields.add(labelTitre);
+
+        titre.setFont(Constantes.FIELD_FONT);
+        titre.setBorder(Constantes.BORDER);
         fields.add(titre);
 
-        this.titre.setFont(Constantes.FIELD_FONT);
-        this.titre.setBorder(Constantes.BORDER);
-        fields.add(this.titre);
+        JLabel labelAuteur = new JLabel("Auteur:");
+        labelAuteur.setLabelFor(auteur);
+        labelAuteur.setDisplayedMnemonic('a');
+        fields.add(labelAuteur);
 
-        JLabel auteur = new JLabel("Auteur:");
-        auteur.setLabelFor(this.auteur);
-        auteur.setDisplayedMnemonic('a');
+        auteur.setFont(Constantes.FIELD_FONT);
+        auteur.setBorder(Constantes.BORDER);
         fields.add(auteur);
-
-        this.auteur.setFont(Constantes.FIELD_FONT);
-        this.auteur.setBorder(Constantes.BORDER);
-        fields.add(this.auteur);
         add(fields, c);
 
-        c.gridy = 2;
+        c.gridy = 3;
         JPanel buttons = new JPanel(new GridLayout(1, 3, 10, 10));
         buttons.setOpaque(false);
         rechercher.setFocusPainted(false);    //
@@ -130,6 +143,22 @@ public class OngletValiderRes extends JPanel {
 
     public void setList(ArrayList<Reservation> res) {
         modele.setListeRes(res);
+    }
+
+    public void setInfoMessage(int i) {
+        if (i == Constantes.BASIC_MESSAGE) {
+            infoMessage.setText("Vous pouvez ici valider les réservations en attente");
+            infoMessage.setForeground(Constantes.BLACK);
+        } else if (i == Constantes.NO_SELECTION) {
+            infoMessage.setText("Veuillez sélectionner une réservation");
+            infoMessage.setForeground(Constantes.RED);
+        } else if (i == Constantes.SUCCESS) {
+            infoMessage.setText("La réservation a bien été validée");
+            infoMessage.setForeground(Constantes.GREEN);
+        } else if (i == Constantes.ERROR) {
+            infoMessage.setText("Ce livre n'a plus d'exemplaire, l'élève a déjà " + Constantes.MAX_EMP + " emprunts ou il a déjà ce livre d'emprunté");
+            infoMessage.setForeground(Constantes.RED);
+        }
     }
 
     public void addListener(BibliController controller) {

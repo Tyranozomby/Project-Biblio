@@ -10,6 +10,8 @@ import java.awt.*;
 
 public class OngletEmpruntDirect extends JPanel {
 
+    private final JLabel infoMessage = new JLabel("", JLabel.CENTER);
+
     private final JComboBox<Livre> comboLivres = new JComboBox<>();
     private final JComboBox<Etudiant> comboEtu = new JComboBox<>();
     private final JButton empAjout = new JButton("Ajouter");
@@ -47,11 +49,10 @@ public class OngletEmpruntDirect extends JPanel {
         c.gridx = 0;
         c.gridy = 2;
         c.gridwidth = 2;
-        JLabel empInfoTxt = new JLabel("", JLabel.CENTER);
-        empInfoTxt.setText("Choisissez un étudiant et un livre");
-        add(empInfoTxt, c);
+        infoMessage.setText("Choisissez un étudiant et un livre");
+        add(infoMessage, c);
 
-        c.gridy = 3;
+        c.gridy = 4;
         c.gridwidth = 2;
         empAjout.setFocusPainted(false);
         add(empAjout, c);
@@ -71,6 +72,19 @@ public class OngletEmpruntDirect extends JPanel {
 
     public JComboBox<Etudiant> getComboEtu() {
         return comboEtu;
+    }
+
+    public void setInfoMessage(int i) {
+        if (i == Constantes.BASIC_MESSAGE) {
+            infoMessage.setText("Choisissez un étudiant et un livre");
+            infoMessage.setForeground(Constantes.BLACK);
+        } else if (i == Constantes.ERROR) {
+            infoMessage.setText("Ce livre n'a plus d'exemplaire, l'élève a déjà " + Constantes.MAX_EMP + " emprunts ou il a déjà ce livre d'emprunté");
+            infoMessage.setForeground(Constantes.RED);
+        } else {
+            infoMessage.setText("L'emprunt a bien été effectué");
+            infoMessage.setForeground(Constantes.GREEN);
+        }
     }
 
     public void addListener(BibliController controller) {

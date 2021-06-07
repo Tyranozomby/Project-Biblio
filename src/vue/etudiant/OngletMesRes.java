@@ -78,10 +78,10 @@ public class OngletMesRes extends JPanel {
     public void setInfoMessageRes(int i) {
         if (i == Constantes.NO_SELECTION) { // No book selected
             infoRes.setText("Aucun livre sélectionné");
-            infoRes.setForeground(Constantes.ERROR);
+            infoRes.setForeground(Constantes.RED);
         } else if (i == Constantes.SUCCESS) {
             infoRes.setText("La réservation a bien été annulée");
-            infoRes.setForeground(Constantes.VALID);
+            infoRes.setForeground(Constantes.GREEN);
         }
     }
 

@@ -1,5 +1,6 @@
 package control;
 
+import constantes.Constantes;
 import modele.Emprunt;
 import modele.Etudiant;
 import modele.Livre;
@@ -62,15 +63,18 @@ public class BibliController implements ActionListener {
                     etu = DB.getStudent(id);
                     gestionEtudiants.fillInfoEtudiant(etu);
                     gestionEtudiants.setLabelID(Integer.toString(id));
+                    gestionEtudiants.toggleSuppr(true);
                 } else {
                     gestionEtudiants.fillInfoEtudiant(null);
                     gestionEtudiants.setLabelID("Aucun");
+                    gestionEtudiants.toggleSuppr(false);
                 }
                 break;
             case "InfoEtu-Sauvegarder":
                 id = gestionEtudiants.getStudentID();
                 etu = gestionEtudiants.getInfoEtudiant(id);
                 if (etu.getNom().equals("") || etu.getPrenom().equals("") || etu.getEmail().equals("") || etu.getMdp().equals("")) {
+                    gestionEtudiants.setInfoMessage(Constantes.ERROR);
                     break;
                 }
                 if (id > 0) {
@@ -78,14 +82,13 @@ public class BibliController implements ActionListener {
                 } else if (id == 0) {
                     DB.createStudent(etu);
                 }
+                gestionEtudiants.setInfoMessage(Constantes.SUCCESS);
                 updateAll(DB);
                 break;
             case "InfoEtu-Supprimer":
-                id = gestionEtudiants.getStudentID();
-                if (id != 0) {
-                    DB.deleteStudent(id);
-                    updateAll(DB);
-                }
+                DB.deleteStudent(gestionEtudiants.getStudentID());
+                gestionEtudiants.setInfoMessage(Constantes.SUCCESS);
+                updateAll(DB);
                 break;
 
             // GESTION LIVRES
@@ -94,17 +97,22 @@ public class BibliController implements ActionListener {
                 break;
             case "Livre-Ajout":
                 if (!DB.canAddBook(gestionLivres.getTitre(), gestionLivres.getAuteur())) {
+                    gestionLivres.setInfoMessage(Constantes.ERROR);
                     break;
                 }
                 DB.createBook(gestionLivres.getTitre(), gestionLivres.getAuteur());
-                gestionLivres.setList(DB.researchCorresponding("", ""));
+                gestionLivres.setList(DB.researchCorresponding(gestionLivres.getTitre(), gestionLivres.getAuteur()));
+                gestionLivres.setInfoMessage(Constantes.SUCCESS);
                 break;
             case "Livre-Suppression":
                 liv = gestionLivres.getSelectedBook();
-                if (liv != null) {
-                    DB.supprBook(liv);
+                if (liv == null) {
+                    gestionLivres.setInfoMessage(Constantes.NO_SELECTION);
+                    break;
                 }
+                DB.supprBook(liv);
                 gestionLivres.setList(DB.researchCorresponding(gestionLivres.getTitre(), gestionLivres.getAuteur()));
+                gestionLivres.setInfoMessage(Constantes.SUCCESS);
                 break;
 
             // VALIDER RÉSERVATION
@@ -118,9 +126,16 @@ public class BibliController implements ActionListener {
                         id = DB.exemplaireLibrePour(res.getLivre());
                         if (id != 0) {
                             DB.validerRes(res, id);
+                            validerRes.setInfoMessage(Constantes.SUCCESS);
                             updateAll(DB);
+                        } else {
+                            validerRes.setInfoMessage(Constantes.ERROR);
                         }
+                    } else {
+                        validerRes.setInfoMessage(Constantes.ERROR);
                     }
+                } else {
+                    validerRes.setInfoMessage(Constantes.NO_SELECTION);
                 }
                 break;
 
@@ -132,8 +147,13 @@ public class BibliController implements ActionListener {
                     id = DB.exemplaireLibrePour(liv);
                     if (id != 0) {
                         DB.addEmprunt(etu, id);
+                        empruntDirect.setInfoMessage(Constantes.SUCCESS);
                         updateAll(DB);
+                    } else {
+                        empruntDirect.setInfoMessage(Constantes.ERROR);
                     }
+                } else {
+                    empruntDirect.setInfoMessage(Constantes.ERROR);
                 }
                 break;
 
@@ -146,15 +166,17 @@ public class BibliController implements ActionListener {
                 if (emp != null) {
                     DB.retourEmprunt(emp);
                     retourEmprunt.setList(DB.getEmprunts(retourEmprunt.getNom(), retourEmprunt.getPrenom(), retourEmprunt.getTitre(), retourEmprunt.getAuteur(), retourEmprunt.isCheckboxSelected()));
+                    retourEmprunt.setInfoMessage(Constantes.SUCCESS);
+                } else {
+                    retourEmprunt.setInfoMessage(Constantes.NO_SELECTION);
                 }
                 break;
             case "Retour-Relance":
                 emp = retourEmprunt.getRetourSelectedEmp();
                 if (emp != null) {
-                    etu = emp.getEtudiant();
-                    if (etu.getId() != 0) {
-                        retourEmprunt.sendMailRelance(etu);
-                    }
+                    retourEmprunt.sendMailRelance(emp.getEtudiant());
+                } else {
+                    retourEmprunt.setInfoMessage(Constantes.NO_SELECTION);
                 }
                 break;
         }

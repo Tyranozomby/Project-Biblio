@@ -3,8 +3,7 @@ package constantes;
 import javax.swing.BorderFactory;
 import javax.swing.border.Border;
 
-import java.awt.Color;
-import java.awt.Font;
+import java.awt.*;
 
 public interface Constantes {
     Font FIELD_FONT = new Font(Font.DIALOG, Font.PLAIN, 15);
@@ -16,8 +15,10 @@ public interface Constantes {
     Color BG_COLOR = new Color(26, 202, 206);
     Color WHITE = new Color(255, 255, 255);
     Color BLACK = new Color(0, 0, 0);
-    Color ERROR = new Color(255, 0, 0);
-    Color VALID = new Color(40, 150, 40);
+    Color RED = new Color(255, 0, 0);
+    Color GREEN = new Color(40, 150, 40);
+
+    Dimension FIELD_SIZE = new Dimension(180,30);
 
     String BIBLI_MAIL = "b"; //""bibliBoy@gmail.com";
     String BIBLI_MDP = "b"; //"I@mBibliB0y";
@@ -32,6 +33,7 @@ public interface Constantes {
     int SUCCESS = 3;
     int MDP_DIFF = 4;
     int MDP_INV = 5;
+    int ERROR = 6;
 
     int MAX_RES = 5;
     int MAX_EMP = 5;

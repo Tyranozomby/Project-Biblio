@@ -12,6 +12,8 @@ import java.util.ArrayList;
 
 public class OngletRetourEmprunt extends JPanel {
 
+    private final JLabel infoMessage = new JLabel("", JLabel.RIGHT);
+
     private final JTextField nom = new JTextField();
     private final JTextField prenom = new JTextField();
     private final JTextField titre = new JTextField();
@@ -31,9 +33,15 @@ public class OngletRetourEmprunt extends JPanel {
 
         GridBagConstraints c = new GridBagConstraints();
 
-        // TABLEAU
+        c.insets = new Insets(8, 8, 8, 8);
+
         c.gridy = 1;
-        c.gridwidth = 1;
+        c.anchor = GridBagConstraints.EAST;
+        setInfoMessage(Constantes.BASIC_MESSAGE);
+        add(infoMessage, c);
+
+        // TABLEAU
+        c.gridy = 2;
         table.setFocusable(false);
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         table.getColumnModel().getColumn(0).setPreferredWidth(300);  //
@@ -49,10 +57,9 @@ public class OngletRetourEmprunt extends JPanel {
         add(scrollPane, c);
 
         // TEXT FIELDS
-        c.insets = new Insets(8, 250, 30, 250);
+        c.insets = new Insets(8, 250, 8, 250);
         c.gridx = 0;
         c.gridy = 0;
-        c.gridwidth = 1;
         c.fill = GridBagConstraints.HORIZONTAL;
         JPanel fields = new JPanel(new GridLayout(5, 2, 10, 10));
         fields.setOpaque(false);
@@ -102,8 +109,7 @@ public class OngletRetourEmprunt extends JPanel {
         c.insets = new Insets(30, 100, 8, 100);
 
         // BOUTONS
-        c.gridy = 2;
-        c.gridwidth = 1;
+        c.gridy = 3;
         JPanel boutons = new JPanel(new GridLayout(1, 3, 10, 10));
         boutons.setOpaque(false);
         rechercher.setFocusPainted(false);  //
@@ -157,6 +163,19 @@ public class OngletRetourEmprunt extends JPanel {
         String mail = student.getEmail();
         if (!mail.equals("")) {
             JOptionPane.showMessageDialog(this, "Un email a bien été envoyé à l'adresse: " + student.getEmail() + "\nEn vrai non mais faites comme si");
+        }
+    }
+
+    public void setInfoMessage(int i) {
+        if (i == Constantes.BASIC_MESSAGE) {
+            infoMessage.setText("Onglet de gestion des emprunts");
+            infoMessage.setForeground(Constantes.BLACK);
+        } else if (i == Constantes.SUCCESS) {
+            infoMessage.setText("Le retour du livre a bien été enregistré");
+            infoMessage.setForeground(Constantes.GREEN);
+        } else if (i == Constantes.NO_SELECTION) {
+            infoMessage.setText("Veuillez choisir un emprunt");
+            infoMessage.setForeground(Constantes.RED);
         }
     }
 

@@ -48,23 +48,23 @@ public class StudentController implements ActionListener {
         switch (e.getActionCommand()) {
             case "Rechercher":
                 newRes.setBookList(DB.researchCorresponding(newRes.getTitre(), newRes.getAuteur()));
-                newRes.setInfoMessageLiv(Constantes.BASIC_MESSAGE);
+                newRes.setInfoMessage(Constantes.BASIC_MESSAGE);
                 break;
             case "Réserver":
                 if (liv != null) {
                     if (DB.getNumberRes(student) < Constantes.MAX_RES) {
                         if (DB.canReserveBook(student, liv)) {
                             DB.addReservation(liv, student);
-                            newRes.setInfoMessageLiv(Constantes.SUCCESS);
+                            newRes.setInfoMessage(Constantes.SUCCESS);
                             updateStudentRes();
                         } else {
-                            newRes.setInfoMessageLiv(Constantes.ALREADY_RESERVED);
+                            newRes.setInfoMessage(Constantes.ALREADY_RESERVED);
                         }
                     } else {
-                        newRes.setInfoMessageLiv(Constantes.MAX_RES_REACHED);
+                        newRes.setInfoMessage(Constantes.MAX_RES_REACHED);
                     }
                 } else {
-                    newRes.setInfoMessageLiv(Constantes.NO_SELECTION);
+                    newRes.setInfoMessage(Constantes.NO_SELECTION);
                 }
                 break;
             case "Supprimer":
@@ -73,7 +73,7 @@ public class StudentController implements ActionListener {
                     updateStudentRes();
                     student.setNbRes(DB.getNumberRes(student));
                     mesRes.setInfoMessageRes(Constantes.SUCCESS);
-                    newRes.setInfoMessageLiv(Constantes.BASIC_MESSAGE);
+                    newRes.setInfoMessage(Constantes.BASIC_MESSAGE);
                 } else {
                     mesRes.setInfoMessageRes(Constantes.NO_SELECTION);
                 }
