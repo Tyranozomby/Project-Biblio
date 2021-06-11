@@ -496,10 +496,10 @@ public class DataBase {
             } else {
                 stmt = connect.prepareStatement("SELECT LIVRE.ID_LIV, AUTEUR, TITRE, DATE_RETOUR, EMPRUNT.ID_EX, ETUDIANT.ID_ET, PRENOM, NOM, EMAIL, MDP FROM LIVRE, EXEMPLAIRE, EMPRUNT, ETUDIANT WHERE LIVRE.ID_LIV = EXEMPLAIRE.ID_LIV and EXEMPLAIRE.ID_EX = EMPRUNT.ID_EX and EMPRUNT.ID_ET = ETUDIANT.ID_ET and EMPRUNT.DATE_RETOUR < SYSDATE and UPPER(NOM) like UPPER(?) and UPPER(PRENOM) like UPPER(?) and UPPER(AUTEUR) like UPPER(?) and UPPER(TITRE) like UPPER(?) ORDER BY DATE_RETOUR, TITRE, AUTEUR, ID_EX");
             }
-            stmt.setString(1, nom);
-            stmt.setString(2, prenom);
-            stmt.setString(3, auteur);
-            stmt.setString(4, titre);
+            stmt.setString(1, '%' + nom + '%');
+            stmt.setString(2, '%' + prenom + '%');
+            stmt.setString(3, '%' + auteur + '%');
+            stmt.setString(4, '%' + titre + '%');
             rSet = stmt.executeQuery();
 
             return createListEmp(rSet);
